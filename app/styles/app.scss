@@ -1,0 +1,14 @@
+
+/* SCSS (SASS) Variable
+http://sass-lang.com/guide
+*/
+
+// Leave off the underscore, and extension!
+@import "base/variables";
+
+// Foundation (SCSS)
+@import "base/foundation-settings";
+@import "foundation";
+@include foundation-everything;
+
+// Components
