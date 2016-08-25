@@ -1,1 +1,2 @@
-# Boilerplate(3) React App
+# Todo React App
+Udemy React course project
