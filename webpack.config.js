@@ -27,7 +27,13 @@ module.exports = {
   },
   resolve : {
     root : __dirname,
+    modulesDirectories: [
+      'node_modules',
+      './app/components',
+    ],
     alias : {
+//    Now we use modulesDirectories instead. Ta-da!
+//      Todoapp: 'app/components/Todoapp.jsx',
       applicationStyles: 'app/styles/app.scss',
     },
     extensions : ['', '.js', '.jsx']
