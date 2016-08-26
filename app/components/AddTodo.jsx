@@ -3,11 +3,14 @@ var ReactDOM = require('react-dom');
 
 // FORM:
 var AddTodo = React.createClass ({
-  onSubmitAddTodo: function (event) {
+
+   // Udemy:
+   handleSubmit: function (event) {
+  // WR__ WORKS.   onSubmitAddTodo: function (event) {
     event.preventDefault();
     // Validate stuff
     var todotext = this.refs.todotextref.value;
-    console.log("WR__ this.refs.todotextref.value: ", this.refs.todotextref.value); // yep
+    // console.log("WR__ this.refs.todotextref.value: ", this.refs.todotextref.value); // yep
     if (todotext.length > 0 ) {
       // Got something at least
       // "Zero out" the input field itself
@@ -19,15 +22,19 @@ var AddTodo = React.createClass ({
     } else {
       // Got nothing, do nothing. ( ? )
       // t.b.d.
+      // Put cursor back in that field! :)
+      this.refs.todotextref.focus();
     }
   },
   render: function () {
     return (
       <div>
         <p>Add a Todo!</p>
-        <form onSubmit={this.onSubmitAddTodo}>
-          <input type="text" ref="todotextref"/>
-          <button className="button" type="submit" />
+        {/* Udemy: */}
+        <form onSubmit={this.handleSubmit}>
+{/* WR__ WORKS.       <form onSubmit={this.onSubmitAddTodo}> */}
+          <input type="text" ref="todotextref" placeholder="What needs doing."/>
+          <button className="button expanded" type="submit" >Add your Todo</button>
         </form>
       </div>
     )
