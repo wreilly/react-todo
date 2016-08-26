@@ -24,7 +24,7 @@ var AddTodo = React.createClass ({
   render: function () {
     return (
       <div>
-        <p>AddTodo Form!</p>
+        <p>Add a Todo!</p>
         <form onSubmit={this.onSubmitAddTodo}>
           <input type="text" ref="todotextref"/>
           <button className="button" type="submit" />
