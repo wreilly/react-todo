@@ -7,16 +7,16 @@ var TodoList = React.createClass({
     var renderTodos = () => {
       return todos.map( (todo) => {
         return (
-          // Need unique key prop (for React)
-          // ... spread operator 9:22 Lecture 86
-          // spread out all properties on an object...
+          // 1) Need unique key prop (for React)
+          // 2) ... spread operator 9:22 Lecture 86
+          //        spread out all properties on an object.
           <Todo key={todo.id} {...todo}/>
         )
       });
     };
     return (
       <div>
-        <p>TodoList test text, etc.</p>
+        <p>I gots to: </p>
         {renderTodos()}
       </div>
     )

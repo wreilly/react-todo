@@ -5,8 +5,7 @@ var Todo = React.createClass({
     var {id, text} = this.props;
     return (
       <div>
-        <p>One of many Todo test text, etc.</p>
-        <p>{id}. Gots to: {text}</p>
+        <p>{id}. {text}</p>
       </div>
     )
   }
