@@ -3,7 +3,7 @@ var ReactDOM = require('react-dom');
 
 var {Route, Router, IndexRoute, hashHistory} = require('react-router');
 
-var Todoapp = require('Todoapp');
+var TodoApp = require('TodoApp');
 
 // Older way: (Now importing foundation from app.scss)
 // Load foundation
@@ -20,8 +20,8 @@ require('style!css!sass!applicationStyles');
 
 ReactDOM.render(
   <div>
-    <p>React Todoapp - app.jsx</p>
-    <Todoapp />
+    <p>React TodoApp - app.jsx</p>
+    <TodoApp />
   </div>,
   document.getElementById('app')
 );

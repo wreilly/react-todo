@@ -33,7 +33,7 @@ module.exports = {
     ],
     alias : {
 //    Now we use modulesDirectories instead. Ta-da!
-//      Todoapp: 'app/components/Todoapp.jsx',
+//      TodoApp: 'app/components/TodoApp.jsx',
       applicationStyles: 'app/styles/app.scss',
     },
     extensions : ['', '.js', '.jsx']

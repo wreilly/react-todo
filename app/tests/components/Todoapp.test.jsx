@@ -4,10 +4,21 @@ var ReactDOM = require('react-dom');
 var TestUtils = require('react-addons-test-utils');
 var $ = require('jquery');
 
-var Todoapp = require('Todoapp');
+var TodoApp = require('TodoApp');
 
-describe('Todoapp', () => {
+describe('TodoApp', () => {
   it('should exist', () => {
-    expect(Todoapp).toExist();
+    expect(TodoApp).toExist();
   });
+
+  it('should add Todo to todos state on handleAddTodo', () => {
+    var todoText = "test text stuff";
+    var todoApp = TestUtils.renderIntoDocument(<TodoApp />); // root object
+
+    todoApp.setState({ todos: [] }); // empty array to start
+    todoApp.handleAddTodo(todoText);
+
+    expect(todoApp.state.todos[0].text).toBe(todoText);
+  });
+
 });

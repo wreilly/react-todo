@@ -2,8 +2,9 @@ var React = require('react');
 var TodoList = require('TodoList');
 var AddTodo = require('AddTodo');
 var TodoSearch = require('TodoSearch');
+var uuid = require('node-uuid');
 
-var Todoapp = React.createClass({
+var TodoApp = React.createClass({
   getInitialState: function() {
     return {
       // some dummy data, to begin
@@ -11,23 +12,36 @@ var Todoapp = React.createClass({
       searchText: '', // empty string, gets em all
       todos: [
         {
-          id: 1,
+          id: uuid(),
           text: 'Walk that dog'
         }, {
-          id: 2,
+          id: uuid(),
           text: 'Clean that yard'
         }, {
-          id: 3,
+          id: uuid(),
           text: 'Walk that durned cat moochie hoohah'
         }, {
-          id: 4,
+          id: uuid(),
           text: 'Make a budget (ouch) Moochie'
         },
       ]
     };
   },
   handleAddTodo: function (text) {
-    alert('new todo! : ' + text); // needed a '+', not a ',' like works in console.log. hokay
+    // alert('new todo! : ' + text); // needed a '+', not a ',' like works in console.log. hokay
+
+    // Spread operator time ...
+    // Put all the existing todos in the same array (again)
+    // Node Package for UUID! (will we ever run out of them?) node-uuid
+    this.setState({
+      todos : [
+        ...this.state.todos,
+        {
+          id: uuid(),
+          text: text
+        }
+      ]
+    });
   },
   handleSearch: function (showCompleted, searchText) {
     this.setState({
@@ -47,4 +61,4 @@ var Todoapp = React.createClass({
   }
 });
 
-module.exports = Todoapp;
+module.exports = TodoApp;
