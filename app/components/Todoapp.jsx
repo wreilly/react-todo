@@ -62,7 +62,7 @@ var TodoApp = React.createClass({
         todo.completed = !todo.completed; // flip the Boolean
       }
       return todo; // put each todo ("back") into the (new) array, updatedTodos
-      // only one will be changed
+      // only one of them will have been changed
     });
     this.setState({todos: updatedTodos});
   },

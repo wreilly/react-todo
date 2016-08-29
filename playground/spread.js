@@ -95,3 +95,27 @@ final.forEach(function (arrayElement) {
   console.log("ANON FUNC Hi " + arrayElement + ", you're hanging in there these days, hey?");
 
 });
+
+/* OUTPUT
+wreillymc-l:ReactTodo william.reilly$ node ./playground/spread.js
+4
+14
+14
+14
+[ 3 ]
+[ 3, [ 'Lisa', 'Tony' ] ]
+[ 3, 'Lisa', 'Tony' ]
+[ 'Rogeroo', 3, 'Lisa', 'Tony' ]
+Howdy here! Hi Joe, you're looking about 66
+Howdy here! Hi Girlfriend, you're looking about 77
+[ [ 'Joe', 66 ], [ 'Girlfriend', 77 ] ]
+howdyForEach here! Hi Joe, you're looking about 66
+howdyForEach here! Hi Girlfriend, you're looking about 77
+Hi Guglielmo, you're hanging in there these days, hey?
+Hi Mkke, you're hanging in there these days, hey?
+Hi Bnny, you're hanging in there these days, hey?
+ANON FUNC Hi Guglielmo, you're hanging in there these days, hey?
+ANON FUNC Hi Mkke, you're hanging in there these days, hey?
+ANON FUNC Hi Bnny, you're hanging in there these days, hey?
+wreillymc-l:ReactTodo william.reilly$ 
+*/
