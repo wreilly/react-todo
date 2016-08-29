@@ -10,4 +10,15 @@ describe('Todo', () => {
   it('should exist', () => {
     expect(Todo).toExist();
   });
+
+  // that prop gets called when someone clicks ...
+  it('should call onToggle prop with the id, on click', () => {
+    var todoData = {
+      id: 199,
+      text: "Write a todo test",
+      completed: true,
+    }
+    // TODO next ...
+  });
+
 });
