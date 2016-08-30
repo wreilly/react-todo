@@ -25,11 +25,20 @@ describe('TodoList', () => {
     var todoList = TestUtils.renderIntoDocument(<TodoList todos={todos} />);
     // how many components rendered under a component
     // scry - finding all the elements. 'scry' sort of 'search, look, see' (oh brother)
-    // Parameters: The parent component (here, list), and then the individual component (of which you expect many) (here, Todo)
+    // Parameters: The parent component (in this case, the List), and then the individual component (of which you expect many) (in this case, the Todo(s))
     // Returns, it would appear, an array
     var todosComponents = TestUtils.scryRenderedComponentsWithType(todoList, Todo);
 
     expect(todosComponents.length).toBe(todos.length);
+
+  });
+
+  it('should render Empty message if no todos', () => {
+    var todos = [];
+    var todoList = TestUtils.renderIntoDocument(<TodoList todos={todos} />);
+
+    var $el = $(ReactDOM.findDOMNode(todoList));
+    expect($el.find('.container__message').length).toBe(1);
 
   });
 

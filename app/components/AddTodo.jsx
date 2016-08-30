@@ -26,9 +26,11 @@ var AddTodo = React.createClass ({
       this.refs.todotextref.focus();
     }
   },
+  // two underscores: parent__child
+  // just a convention invention
   render: function () {
     return (
-      <div>
+      <div className="container__footer">
         <p>Add a Todo!</p>
         {/* Udemy: */}
         <form onSubmit={this.handleSubmit}>

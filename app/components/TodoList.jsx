@@ -5,6 +5,13 @@ var TodoList = React.createClass({
   render: function () {
     var {todos} = this.props;
     var renderTodos = () => {
+
+      if (todos.length === 0 ) {
+        return (
+          <p className="container__message">No todos for you!</p>
+        )
+      }
+
       return todos.map( (todo) => {
         return (
           // 1) Need unique key prop (for React)
@@ -24,7 +31,6 @@ var TodoList = React.createClass({
     };
     return (
       <div>
-        <p>I gots to: </p>
         {renderTodos()}
       </div>
     )

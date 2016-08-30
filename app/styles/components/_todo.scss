@@ -1,0 +1,38 @@
+.todo {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  padding: 1rem;
+  transition: background .3s ease;
+
+  p, input {
+    margin: 0;
+  }
+
+  // <input />!
+  > :first-child {
+    margin-right: 1rem
+  }
+
+  // SCSS pseudo-selector (right inside regular selector)
+  &:hover {
+    background: #f0f0f0;
+  }
+}
+
+/* This below is same as the SCSS &:hover {} above:
+.todo:hover {
+
+}
+*/
+
+.todo__subtext {
+  color: #999; // nice grey
+}
+
+.todo-completed {
+  p, .todo-subtext {
+    color: $light-color;
+    text-decoration: line-through;
+  }
+}

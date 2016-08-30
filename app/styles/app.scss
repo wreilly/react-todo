@@ -12,3 +12,6 @@ http://sass-lang.com/guide
 @include foundation-everything;
 
 // Components
+@import "components/container";
+@import "components/page-title";
+@import "components/todo";

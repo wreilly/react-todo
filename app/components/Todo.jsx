@@ -4,6 +4,11 @@ var moment = require('moment');
 var Todo = React.createClass({
   render: function () {
     var {id, text, completed, createdAt, completedAt} = this.props;
+
+    // Style stuff:
+    // Set the style depending on status
+    var todoClassName = completed ? 'todo todo-completed' : 'todo';
+
     var renderDate = () => {
       // Default
       var message = 'Created ';
@@ -18,16 +23,20 @@ var Todo = React.createClass({
       return message + moment.unix(timestamp).format('MMM Do YYYY @ h:mm A');
     };
     return (
-      <div onClick={ () => {
+      <div className={todoClassName} onClick={ () => {
           this.props.onToggle(id);
         }}>
 {/* We'll remove the now veddy long 'id'
   (User doesn't need to see it, know of it)
 e.g. node--uuid: 0bd2b527-0b5e-4603-8b02-4518c39cce7b
          <p>{id}. {text}</p> */}
-        <input type="checkbox" checked={completed} />
-        <p>{text}</p>
-        <p>{renderDate()}</p>
+         <div>
+           <input type="checkbox" checked={completed} />
+         </div>
+        <div>
+          <p>{text}</p>
+          <p className="todo__subtext">{renderDate()}</p>
+        </div>
       </div>
     )
   }
