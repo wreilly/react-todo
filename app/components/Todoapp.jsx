@@ -1,8 +1,10 @@
 var React = require('react');
+var uuid = require('node-uuid');
+
 var TodoList = require('TodoList');
 var AddTodo = require('AddTodo');
 var TodoSearch = require('TodoSearch');
-var uuid = require('node-uuid');
+var TodoAPI = require('TodoAPI');
 
 var TodoApp = React.createClass({
   getInitialState: function() {
@@ -10,26 +12,33 @@ var TodoApp = React.createClass({
       // some dummy data, to begin
       showCompleted: false, // Just not yet complete ones
       searchText: '', // empty string, gets em all
-      todos: [
-        {
-          id: uuid(),
-          text: 'Walk that dog',
-          completed: false,
-        }, {
-          id: uuid(),
-          text: 'Clean that yard',
-          completed: true,
-        }, {
-          id: uuid(),
-          text: 'Walk that durned cat moochie hoohah',
-          completed: true,
-        }, {
-          id: uuid(),
-          text: 'Make a budget (ouch) Moochie',
-          completed: false,
-        },
-      ]
+      todos: TodoAPI.getTodos(),
+      // todos: [
+      //   {
+      //     id: uuid(),
+      //     text: 'Walk that dog',
+      //     completed: false,
+      //   }, {
+      //     id: uuid(),
+      //     text: 'Clean that yard',
+      //     completed: true,
+      //   }, {
+      //     id: uuid(),
+      //     text: 'Walk that durned cat moochie hoohah',
+      //     completed: true,
+      //   }, {
+      //     id: uuid(),
+      //     text: 'Make a budget (ouch) Moochie',
+      //     completed: false,
+      //   },
+      // ]
     };
+  },
+  // React Life-cycle. Gets fired after either
+  // PROPS *or* STATE changes:
+  componentDidUpdate: function () {
+    // *ANY* change (to State) (?) we update the todos array
+    TodoAPI.setTodos(this.state.todos); 
   },
   handleAddTodo: function (text) {
     // alert('new todo! : ' + text); // needed a '+', not a ',' like works in console.log. hokay

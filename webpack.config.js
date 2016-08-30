@@ -30,6 +30,7 @@ module.exports = {
     modulesDirectories: [
       'node_modules',
       './app/components',
+      './app/api',
     ],
     alias : {
 //    Now we use modulesDirectories instead. Ta-da!
