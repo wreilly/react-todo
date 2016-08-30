@@ -1,5 +1,6 @@
 var React = require('react');
 var uuid = require('node-uuid');
+var moment = require('moment');
 
 var TodoList = require('TodoList');
 var AddTodo = require('AddTodo');
@@ -53,6 +54,9 @@ var TodoApp = React.createClass({
           id: uuid(),
           text: text,
           completed: false,
+          /* moment() "gets called as a *function*" and "the unix *method*" which returns our timestamp. */
+          createdAt: moment().unix(),
+          completedAt: undefined,
         }
       ]
     });
@@ -69,6 +73,12 @@ var TodoApp = React.createClass({
       if(todo.id === id) {
         // This is the one changed!
         todo.completed = !todo.completed; // flip the Boolean
+
+        // Let's deal with a change that means "Got completed!"
+        /* If the above line set "completed" to true (from false), that's it! We're done, and should slap on a timestap.
+        (If somebody was "un-completing" a previously marked completion (wtf?), we "undefine" that cwazy timestamp already. */
+        todo.completedAt = todo.completed ? moment().unix() : undefined;
+        // console.log("WR__ 001 todo.completed AND todo.completedAt : " + todo.completed + " : " + todo.completedAt);
       }
       return todo; // put each todo ("back") into the (new) array, updatedTodos
       // only one of them will have been changed
