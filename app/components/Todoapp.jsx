@@ -38,7 +38,7 @@ var TodoApp = React.createClass({
   // PROPS *or* STATE changes:
   componentDidUpdate: function () {
     // *ANY* change (to State) (?) we update the todos array
-    TodoAPI.setTodos(this.state.todos); 
+    TodoAPI.setTodos(this.state.todos);
   },
   handleAddTodo: function (text) {
     // alert('new todo! : ' + text); // needed a '+', not a ',' like works in console.log. hokay
@@ -76,11 +76,18 @@ var TodoApp = React.createClass({
     this.setState({todos: updatedTodos});
   },
   render: function () {
-    var {todos} = this.state;
+    // Now, the todos is what the API brought back
+    // from localStorage:
+    var {todos, showCompleted, searchText } = this.state;
+    // Next, if we' filtering (checkbox; search text),
+    // then we use the API to apply that filter:
+    var filteredTodos = TodoAPI.filterTodos(todos, showCompleted, searchText);
+
     return (
       <div>
         <TodoSearch onSearch={this.handleSearch} />
-        <TodoList todos={todos} onToggle={this.handleToggle} />
+        {/* Pass in not all todos, but the filtered ones: */}
+        <TodoList todos={filteredTodos} onToggle={this.handleToggle} />
         <AddTodo onAddTodo={this.handleAddTodo}/>
       </div>
     )

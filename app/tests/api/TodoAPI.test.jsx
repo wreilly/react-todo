@@ -79,4 +79,65 @@ describe('TodoAPI', () => {
 
   });
 
-})
+  describe('filterTodos', () => {
+    var todos = [{
+        id: 1,
+        text: 'Some text to do',
+        completed: true,
+    }, {
+        id: 2,
+        text: 'here are some 2nd text to do',
+        completed: false,
+    }, {
+        id: 3,
+        text: 'a THIRD text to do',
+        completed: true,
+    },];
+
+    it('should return all items if showCompleted is true', () => {
+      // pass in array, boolean, search text (none in this case):
+      var filteredTodos = TodoAPI.filterTodos(todos, true, '');
+
+      // Update: Hah. This .toEqual test is flawed, kids.
+      // Especially when you SORT the filtered array, kids. Hah!
+      // We're going to show 'em all:
+      // NO MO' : expect(filteredTodos).toEqual(todos);
+
+      // And that number ("all") happens to be : 3
+      expect(filteredTodos.length).toBe(3); // hmm
+    });
+
+    it('should return only completed: false if showCompleted is false', () => {
+      var filteredTodos = TodoAPI.filterTodos(todos, false, '');
+      // Of our 3, only 1 has completed: false --
+      expect(filteredTodos.length).toBe(1);
+    });
+
+    it('should sort uncompleted to top', () => {
+      // Get 'em all, to begin: true: show the completed ones!
+      var filteredTodos = TodoAPI.filterTodos(todos, true, '');
+      // Properly sorted, the top one is not yet completed: false
+      expect(filteredTodos[0].completed).toBe(false);
+    });
+
+    /* ******** SEARCH TEXT *********** */
+    it('should filter by search text, return all todos if search text is empty string', () => {
+      // Search text string is empty. (We also go for "showCompleted" why not)
+      var filteredTodos = TodoAPI.filterTodos(todos, true, '');
+      expect(filteredTodos.length).toBe(3); // got 'em all
+    });
+
+    it('should filter by search text, return only those todos that contain the search text string', () => {
+      // Search text string is 'some' (matches 2 of 3 items).
+      // Note: one has capital 'S'! 'Some'. We're going to lowercase things ...
+      // (We also go for "showCompleted" why not, get more items to compare)
+      var filteredTodos = TodoAPI.filterTodos(todos, true, 'Some');
+      expect(filteredTodos.length).toBe(2); // 2 match 'some'
+
+      var filteredTodos = TodoAPI.filterTodos(todos, true, 'some');
+      expect(filteredTodos.length).toBe(2); // 2 match 'some'
+    });
+
+  });
+
+});
