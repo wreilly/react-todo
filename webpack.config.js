@@ -35,7 +35,9 @@ module.exports = {
     alias : {
 //    Now we use modulesDirectories instead. Ta-da!
 //      TodoApp: 'app/components/TodoApp.jsx',
+// But we still use alias for some other things:
       applicationStyles: 'app/styles/app.scss',
+      actions: 'app/actions/actions.jsx',
     },
     extensions : ['', '.js', '.jsx']
   },
