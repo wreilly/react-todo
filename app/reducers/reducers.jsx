@@ -70,32 +70,40 @@ export var todosReducer = ( state = [], action) => {
     // set commpleted at timestamp or clear
     // HMM. STATE is that passed-in array, of todos
     case 'TOGGLE_TODO':
+
+/* ********* WR__ CODE *********** */
+/* */
       var todosHere = [
         ...state,
       ]
       return todosHere.map( (todoHere) => {
         if (todoHere.id === action.id) {
           var wasCompletedTF = todoHere.completed;
-          // var flipWasCompletedTF = !wasCompletedTF;
-          // todoHere.completed = !todoHere.completed; // <<< NO!
-          // if (todoHere.completedAt) {
-          //   // Held some value (timestamp)
-          //   todoHere.completedAt = undefined; // clear it out // <<< NO!
-          // } else {
-          //   todoHere.completedAt = moment().unix(); // <<< NO!
-          // }
+          // -- var flipWasCompletedTF = !wasCompletedTF;
+          // -- todoHere.completed = !todoHere.completed; // <<< NO!
+          // -- if (todoHere.completedAt) {
+          // --   // Held some value (timestamp)
+          // --   todoHere.completedAt = undefined; // clear it out // <<< NO!
+          // -- } else {
+          // --   todoHere.completedAt = moment().unix(); // <<< NO!
+          // -- }
           return {
               ...todoHere,
               completed: !wasCompletedTF,
               completedAt: !wasCompletedTF ? moment().unix() : undefined ,
-// NOPE:              completedAt: completed ? moment().unix() : undefined , // << ReferenceError: completed is not defined
+// -- NOPE:              completedAt: completed ? moment().unix() : undefined , // << ReferenceError: completed is not defined
 
-// WORKS:
-              // completed: flipWasCompletedTF,
-              // completedAt: flipWasCompletedTF ? moment().unix() : undefined ,
+// -- WORKS:
+              // -- completed: flipWasCompletedTF,
+              // -- completedAt: flipWasCompletedTF ? moment().unix() : undefined ,
           };
-        }
-      });
+        } else { // This was missing. Cause of error in test array > 1 element!
+          return todoHere;
+      }
+
+    });
+/* */
+/* ********* /WR__ CODE *********** */
 
 
 /* ********* PERFESSER CODE *********** */
@@ -109,10 +117,12 @@ export var todosReducer = ( state = [], action) => {
             completed: nextCompleted,
             completedAt: nextCompleted ? moment().unix() : undefined ,
           };
+        } else { // This was missing. Cause of error in test array > 1 element!
+          return todo;
         }
       });
 */
-/* ********* PERFESSER CODE *********** */
+/* ********* /PERFESSER CODE *********** */
 
 /* WR__ code, WR__ learning:
 

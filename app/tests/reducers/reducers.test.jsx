@@ -1,7 +1,8 @@
 var expect = require('expect');
-
 //  PASS VALUES TO DEEPFREEZE, then to our Reducers
 var df = require('deep-freeze-strict');
+
+var lilInspector = require('lilInspector');
 
 var reducers = require('reducers');
 
@@ -62,10 +63,6 @@ describe('Reducers',  () => {
 // assert completedFlipped
 
     it('should toggle a single todo  --- completed or not; timestamp or clear', () => {
-      var action = {
-        type: 'TOGGLE_TODO',
-        id: 1,
-      };
       var todosTest = [
         {
           id: 1,
@@ -82,9 +79,45 @@ describe('Reducers',  () => {
           createdAt: 3000, // 3,000 seconds into 1970
         },
       ];
+      var action = {
+        type: 'TOGGLE_TODO',
+        id: 1,
+      };
       var res = reducers.todosReducer(df(todosTest), df(action));
       expect(res[0].completed).toBe(false);
       expect(res[0].completedAt).toBe(undefined);
+// Let's toggle again!
+// NOPE!:      var res = reducers.todosReducer(df(todosTest), df(action));
+// Hmm, thought I could pass res in.
+// TypeError: Cannot read property 'id' of undefined
+      // var res02 = reducers.todosReducer(df(res), df(action));
+
+      // console.log("WR__ res res[0] res[0].completed : " + res + " : " + res[0] + " : " + res[0].completed);
+
+      lilInspector(res[0], 'res[0] first run, completed false');
+
+      var res02 = reducers.todosReducer(df(res), df(action));
+
+      lilInspector(res02[0], 'res02[0] second run, completed true');
+      lilInspector(res02[0], 'res02[0] second run, completedAt > 1473070948');
+
+      expect(res02[0].completed).toBe(true);
+      // http://www.unixtimestamp.com/
+      /*
+      1473068041 seconds since Jan 01 1970. (UTC)
+      This epoch translates to:
+      09/05/2016 @ 9:34am (UTC)
+      2016-09-05T09:34:01+00:00 in ISO 8601
+
+      1473070948 seconds since Jan 01 1970. (UTC)
+
+This epoch translates to:
+
+09/05/2016 @ 10:22am (UTC)
+2016-09-05T10:22:28+00:00 in ISO 8601
+      */
+      // https://github.com/mjackson/expect#tobegreaterthan
+      expect(res02[0].completedAt).toBeGreaterThan(1473070948);
     });
 
   }); // todosReducer
