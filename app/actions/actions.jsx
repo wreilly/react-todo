@@ -22,7 +22,7 @@ export var addTodo = (text) => {
 
 // WR__ CODE:
 // I chose to call it 'todoText' (why not). NON-conventional me.
-// But then I cannot use th ES6 thing: text,
+// But then I cannot use the ES6 thing: todoText,
 // No sir, I gotta do: text: todoText,
 export var addTodo = (todoText) => {
   return {

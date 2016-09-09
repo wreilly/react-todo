@@ -4,7 +4,13 @@ var ReactDOM = require('react-dom');
 var TestUtils = require('react-addons-test-utils');
 var $ = require('jquery');
 
-var Todo = require('Todo');
+// OLD ES5:
+// var Todo = require('Todo');
+var {Todo} = require('Todo'); // ES6 destructuring can get the "raw old original React Todo component" off the 'Todo' module
+// The 'Todo' module/component remember does its export in 2 ways:
+// 1. export default is the Reduxed Connected Todo component
+// 2. export to named var 'Todo' is the raw old original React component 'Todo'
+// So the require('Todo') gets the whole Reduxed thing, since that is what the DEFAULT export is. And then off of that, by {destructuring}, we can obtain the plain old original React component, named 'Todo', inside of that module, also named 'Todo'. I think.
 
 describe('Todo', () => {
   it('should exist', () => {
@@ -12,7 +18,10 @@ describe('Todo', () => {
   });
 
   // that prop gets called when someone clicks ...
-  it('should call onToggle prop with the id, on click', () => {
+  // OLD:
+  // it('should call onToggle prop with the id, on click', () => {
+  // NEW: Redux Testing:
+  it('should dispatch the TOGGLE_TODO action on click', () => {
     var canIUseVarHere = 199;
     var todoData = {
       id: canIUseVarHere,
@@ -24,7 +33,10 @@ describe('Todo', () => {
 
     var spyFunc = expect.createSpy();
     // hmm, what about the KEY ? (see TodoList): key={todoData.id} Not used in the video 94 8:00 or so...
-    var testTodo = TestUtils.renderIntoDocument(<Todo onToggle={spyFunc} {...todoData} />);
+    // OLD:
+    // var testTodo = TestUtils.renderIntoDocument(<Todo onToggle={spyFunc} {...todoData} />);
+    // NEW: Redux Testing:
+    var testTodo = TestUtils.renderIntoDocument(<Todo dispatch={spyFunc} {...todoData} />);
 
     /* ******* HOW DOES ZIS WORK ?? ***** */
     //  video 94 ca. 8:34
@@ -50,8 +62,14 @@ describe('Todo', () => {
 /*   TypeError: _this.props.onToggle is not a function
 */
 
-
-    expect(spyFunc).toHaveBeenCalledWith(canIUseVarHere); // since that is the data, on it
+  // OLD:
+    // since that is the data, on it
+    // expect(spyFunc).toHaveBeenCalledWith(canIUseVarHere);
+    // NEW: the func (spy) is dispatch, and it is called with the action object:
+    expect(spyFunc).toHaveBeenCalledWith({
+      type: 'TOGGLE_TODO',
+      id: todoData.id, // that is our 199 = ok
+    }); //
     // Nope, not yet:
     // expect(testTodo.todoData.completed).toBe(false);
     /* TypeError: Cannot read property 'completed' of undefined

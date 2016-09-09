@@ -1,7 +1,8 @@
 var redux = require('redux');
 var { searchTextReducer, showCompletedReducer, todosReducer} = require('reducers');
 
-export var configure = () => {
+// New: pass in initialState; if none, set to empty object
+export var configure = (initialState = {}) => {
   /* http://redux.js.org/docs/api/combineReducers.html
 A popular convention is to name reducers after the state slices they manage, so you can use ES6 property shorthand notation: combineReducers({ counter, todos }). This is equivalent to writing combineReducers({ counter: counter, todos: todos }).
 */
@@ -23,7 +24,7 @@ A popular convention is to name reducers after the state slices they manage, so 
   (f) => f; // 2. return implicit
   f => f; // 3. With just one param only you can skip ()
   */
-  var store = redux.createStore(reducer, redux.compose(
+  var store = redux.createStore(reducer, initialState, redux.compose(
     window.devToolsExtension ? window.devToolsExtension() : f => f
   ))
 

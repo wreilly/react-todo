@@ -2,8 +2,23 @@ var React = require('react');
 var uuid = require('node-uuid');
 var moment = require('moment');
 
-var TodoList = require('TodoList');
-var AddTodo = require('AddTodo');
+// OLD ES5:
+// var TodoList = require('TodoList');
+
+// NEW ES6 import, for the export done on TodoList.jsx`
+// *UPDATE* Hmm, see below import AddTodo. I think this import TodoList is the connected one, not the regular one.
+// OLD: (?) We just do regular from 'TodoList', not the ConnectedTodoList,
+// because this is just for testing (?) .... hmm.
+import TodoList from 'TodoList';
+
+
+// OLD ES5:
+// var AddTodo = require('AddTodo');
+
+// NEW ES6 import, for the export done on AddTodo.jsx`
+// "I'm going to switch that to use import, so we can grab the default, which *is* connected to the Redux store":  Lecture 123 06:00
+import AddTodo from 'AddTodo';
+
 var TodoSearch = require('TodoSearch');
 var TodoAPI = require('TodoAPI');
 
@@ -67,6 +82,14 @@ var TodoApp = React.createClass({
       searchText: searchText.toLowerCase() // regardless of input, search it up
     });
   },
+  /* ******** REACT-REDUX ********** */
+  /* handleToggle NO LONGER needed... */
+  /* Why? Because w. Redux, this "middle" component (TodoList) can get
+          state from the Store on its own.
+          Does not rely on it being passed down from parent (TodoApp),
+          nor does it pass it further along to child (Todo)
+  */
+  /*
   handleToggle: function (id) {
     // alert(id);
     var updatedTodos = this.state.todos.map( (todo) => {
@@ -75,8 +98,8 @@ var TodoApp = React.createClass({
         todo.completed = !todo.completed; // flip the Boolean
 
         // Let's deal with a change that means "Got completed!"
-        /* If the above line set "completed" to true (from false), that's it! We're done, and should slap on a timestap.
-        (If somebody was "un-completing" a previously marked completion (wtf?), we "undefine" that cwazy timestamp already. */
+        // If the above line set "completed" to true (from false), that's it! We're done, and should slap on a timestap.
+        // (If somebody was "un-completing" a previously marked completion (wtf?), we "undefine" that cwazy timestamp already.
         todo.completedAt = todo.completed ? moment().unix() : undefined;
         // console.log("WR__ 001 todo.completed AND todo.completedAt : " + todo.completed + " : " + todo.completedAt);
       }
@@ -85,6 +108,9 @@ var TodoApp = React.createClass({
     });
     this.setState({todos: updatedTodos});
   },
+  */
+  /* /handleToggle NO LONGER needed */
+
   render: function () {
     // Now, the todos is what the API brought back
     // from localStorage:
@@ -101,8 +127,12 @@ var TodoApp = React.createClass({
           <div className="column small-centered small-11 medium-6 large-5">
             <div className="container">
                 <TodoSearch onSearch={this.handleSearch} />
-  {/* Pass in not all todos, but the filtered ones: */}
-                <TodoList todos={filteredTodos} onToggle={this.handleToggle} />
+  {/* ******** REACT-REDUX ********** */}
+  {/* <TodoList /> gets simpler: No need for state data nor toggle functionality / handler to be passed:
+  */}
+                {/*  <TodoList todos={filteredTodos} onToggle={this.handleToggle} />
+                */}
+                <TodoList />
                 <AddTodo onAddTodo={this.handleAddTodo}/>
             </div>
 

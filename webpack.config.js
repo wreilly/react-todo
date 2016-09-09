@@ -63,5 +63,9 @@ module.exports = {
       path.resolve(__dirname, './node_modules/foundation-sites/scss')
     ]
   },
+  /*
+https://www.udemy.com/the-complete-react-web-app-developer-course/learn/v4/t/lecture/5647320
+... "inline-source-map" or "eval-source-map" instead.
+  */
   devtool : 'cheap-module-eval-source-map'
 };

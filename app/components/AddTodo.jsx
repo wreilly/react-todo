@@ -1,29 +1,59 @@
 var React = require('react');
-var ReactDOM = require('react-dom');
+// Hmm, at 0:39 in Lecture 123, this line is deleted out ... (without comment)
+// var ReactDOM = require('react-dom');
+
+var {connect} = require('react-redux');
+var actions = require('actions');
+
+var lilInspector = require('lilInspector');
+
 
 // FORM:
-var AddTodo = React.createClass ({
+// Raw React component (for testing)
+export var AddTodo = React.createClass ({
 
    // Udemy:
    handleSubmit: function (event) {
   // WR__ WORKS.   onSubmitAddTodo: function (event) {
     event.preventDefault();
+
+/* ***** REDUX REACT ********** */
+
+/* WR__ testing: Do I have to call it 'dispatch'?
+How about dispatchfoobar99 ?? << YES. That worked too. Hmm.
+In AddTodo.test.jsx, and here in AddTodo.jsx
+*/
+
+    lilInspector(this.props, 'this.props, AddTodo createClass()');
+
+    lilInspector(this.props.dispatchfoobar99, 'this.props.dispatchfoobar99, AddTodo createClass()');
+
+  // ES6 destructuring get dispatch off of props
+    // var {dispatch} = this.props;
+    var {dispatchfoobar99} = this.props;
+
     // Validate stuff
-    var todotext = this.refs.todotextref.value;
-    // console.log("WR__ this.refs.todotextref.value: ", this.refs.todotextref.value); // yep
-    if (todotext.length > 0 ) {
+    var todoText = this.refs.todoTextref.value;
+    // console.log("WR__ this.refs.todoTextref.value: ", this.refs.todoTextref.value); // yep
+    if (todoText.length > 0 ) {
       // Got something at least
       // "Zero out" the input field itself
-      this.refs.todotextref.value = '';
+      this.refs.todoTextref.value = '';
       // Call parent func. (per what we did in 05 WeatherForm.jsx)
       //   (not sure how/why it is on props, available right here; hmm)
-      // this.props.onS???????ubmit(todotext);
-      this.props.onAddTodo(todotext);
+      // this.props.onS???????ubmit(todoText);
+
+/* ***** REDUX REACT ********** */
+      // OLD: handler
+      // this.props.onAddTodo(todoText);
+      // NEW: REDUX dispatch action
+      // dispatch(actions.addTodo(todoText));
+      dispatchfoobar99(actions.addTodo(todoText));
     } else {
       // Got nothing, do nothing. ( ? )
       // t.b.d.
       // Put cursor back in that field! :)
-      this.refs.todotextref.focus();
+      this.refs.todoTextref.focus();
     }
   },
   // two underscores: parent__child
@@ -35,7 +65,7 @@ var AddTodo = React.createClass ({
         {/* Udemy: */}
         <form onSubmit={this.handleSubmit}>
 {/* WR__ WORKS.       <form onSubmit={this.onSubmitAddTodo}> */}
-          <input type="text" ref="todotextref" placeholder="What needs doing."/>
+          <input type="text" ref="todoTextref" placeholder="What needs doing."/>
           <button className="button expanded" type="submit" >Add your Todo</button>
         </form>
       </div>
@@ -43,7 +73,11 @@ var AddTodo = React.createClass ({
   }
 });
 
-module.exports = AddTodo;
+/* ***** REDUX REACT ********** */
+// module.exports = AddTodo;
+// AddTodo doesn't need any properties off state:
+export default connect()(AddTodo);
+
 
 /* From NOTES. 2016-08-24
 See also similar in Todo.jsx, for onClick

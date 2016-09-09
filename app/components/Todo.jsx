@@ -1,9 +1,19 @@
 var React = require('react');
+var {connect} = require('react-redux');
 var moment = require('moment');
 
-var Todo = React.createClass({
+var actions = require('actions');
+
+// OLD:
+// var Todo = React.createClass({
+// NEW: "export"
+// Plain Old Original React Component:
+// We keep it around - Will be used only for Tests...
+export var Todo = React.createClass({
+  /* REACT-REDUX */
+  // ADD dispatch from this.props.
   render: function () {
-    var {id, text, completed, createdAt, completedAt} = this.props;
+    var {id, text, completed, createdAt, completedAt, dispatch} = this.props;
 
     // Style stuff:
     // Set the style depending on status
@@ -24,7 +34,17 @@ var Todo = React.createClass({
     };
     return (
       <div className={todoClassName} onClick={ () => {
+        {/* ******** REACT-REDUX ********** */}
+        {/*  As in TodoList, remove onToggle - it's no longer passed down.
           this.props.onToggle(id);
+
+          Instead, we invoke the toggleTodo directly off the actions
+          Hmm, what is it makes them (the actions) available here, other than simply having required them in ?? (?)
+
+          Update:
+         */}
+         dispatch(actions.toggleTodo(id));
+
         }}>
 {/* We'll remove the now veddy long 'id'
   (User doesn't need to see it, know of it)
@@ -42,7 +62,16 @@ e.g. node--uuid: 0bd2b527-0b5e-4603-8b02-4518c39cce7b
   }
 });
 
-module.exports = Todo;
+
+
+// module.exports = Todo;
+// No state needed to be obtained off the store, for Todo.
+// (Hmm. Not sure I understand oh well.)
+
+// OLD:
+// module.exports = connect()(Todo);
+// NEW:
+export default connect()(Todo);
 
 /* From NOTES. 2016-08-29
 See also similar in AddTodo.jsx, for onSubmit

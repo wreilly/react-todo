@@ -1,17 +1,47 @@
 var expect = require('expect');
 var React = require('react');
 var ReactDOM = require('react-dom');
+var {Provider} = require('react-redux');
 var TestUtils = require('react-addons-test-utils');
 var $ = require('jquery');
 
+var configureStore = require('configureStore');
 var TodoApp = require('TodoApp');
+
+// OLD ES5
+// var TodoList = require('TodoList');
+// NEW ES6 import for export
+// As on TodoApp.jsx, this is just the plain regular TodoList component, not the ConnectedTodoList component. Cheers.
+import TodoList from 'TodoList';
 
 describe('TodoApp', () => {
   it('should exist', () => {
     expect(TodoApp).toExist();
   });
 
-  it('should add Todo to todos state on handleAddTodo', () => {
+  it('should render TodoList', () => {
+    // create a store...
+    // give it to a mocked provider,
+    var store = configureStore.configure();
+    var provider = TestUtils.renderIntoDocument(
+      <Provider store={store}>
+        <TodoApp />
+      </Provider>
+    );
+
+
+// https://facebook.github.io/react/docs/test-utils.html#scryrenderedcomponentswithtype
+    var todoApp = TestUtils.scryRenderedComponentsWithType(provider, TodoApp)[0];
+    var todoList = TestUtils.scryRenderedComponentsWithType(todoApp, TodoList);
+
+    expect(todoList.length).toEqual(1);
+  });
+
+  /* ******* REACT-REDUX ************* */
+  /* COMMENT OUT tests here in TodoApp.
+  This component will not have the tests, in future.
+
+    it('should add Todo to todos state on handleAddTodo', () => {
     var todoText = "test text stuff";
     var todoApp = TestUtils.renderIntoDocument(<TodoApp />); // root object
 
@@ -28,6 +58,12 @@ describe('TodoApp', () => {
     expect(todoApp.state.todos[0].createdAt).toBeA('number');
 
   });
+  */
+  /* ******* /REACT-REDUX ************* */
+
+
+/* ******* REACT-REDUX ************* */
+/* COMMENT OUT test for TOGGLE ----
 
   // From false (not completed) to true (completed), completedAt set to a number. woot.
   it('should toggle completed value to TRUE - COMPLETED when handleToggle called', () => {
@@ -56,7 +92,17 @@ describe('TodoApp', () => {
 
   });
 
-// From true (completed) to false (not completed (solly!)), completedAt gets removed
+  */
+  /* ******* /REACT-REDUX ************* */
+
+
+
+
+  /* ******* REACT-REDUX ************* */
+  /* COMMENT OUT tests here in TodoApp.
+  This component will not have the tests, in future.
+
+  // From true (completed) to false (not completed (solly!)), completedAt gets removed
 // timestamp craziness: 1472591868
 // More or less 5:15 pm Aug 30, 2016
 // So this: 1472419068
@@ -87,6 +133,9 @@ describe('TodoApp', () => {
     expect(todoApp.state.todos[0].completedAt).toNotExist();
 
   });
+  */
+  /* ******* /REACT-REDUX ************* */
+
 
 
 });

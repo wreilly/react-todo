@@ -20,10 +20,13 @@ describe('Actions', () => {
   it('should generate the add Todo action', () => {
     var action = {
       type: 'ADD_TODO',
-      todoText: 'Gots to write more actions.',
+      text: 'Gots to write more actions.',
+// My NON-conventional name -
+// To pass this test I had to change from todoText to text (see actions.jsx):
+//    todoText: 'Gots to write more actions.',
     };
-
-    var res = actions.addTodo(action.todoText);
+    // Also changed todoText to text here, on the action:
+    var res = actions.addTodo(action.text);
     expect(res).toEqual(action);
   });
 
