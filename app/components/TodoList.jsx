@@ -8,25 +8,43 @@ var {connect} = require('react-redux');
 // "We don't use destructuring here because that would only give us access to the (plain old, pure React) Todo component, and we only use that for testing; here in the real app component (vs. testing) we want the connected Todo component."
 import Todo from 'Todo';
 
+/* REDUX refactoring of TodoSearch. Lecture 124 11:48
+We had not needed TodoAPI until now, here on the TodoList.jsx
+We just obtained the unfiltered todos array.
+But now we want to get the showCompleted state and the searchText too.
+*/
+var TodoAPI = require('TodoAPI');
+
 // As in Todo.jsx, we export the
 // plain old original regular React component: (but the export default (below) is for the Reduxed connected component.)
 export var TodoList = React.createClass({
   render: function () {
-    var {todos} = this.props;
-    var renderTodos = () => {
 
+    // var {todos} = this.props;
+        // REDUX Refactor TodoSearch:
+        // We used to only get array todos, now we get all 3 properties
+
+
+    var {todos, showCompleted, searchText} = this.props;
+    var renderTodos = () => {
       if (todos.length === 0 ) {
         return (
-          <p className="container__message">No todos for you!</p>
+          <p className="container__message">No wr__todos for you!</p>
         );
       }
 
-      return todos.map( (todo) => {
+
+      // return todos.map( (todo) => {
+      // REDUX Refactor TodoSearch. Call the API and its filter,
+      //   to get the application of those 2 props: showCompleted and searchText!
+
+
+      return TodoAPI.filterTodos(todos, showCompleted, searchText).map( (todo) => {
         return (
           // 1) Need unique key prop (for React)
           // 2) ... spread operator 9:22 Lecture 86
           //        spread out all properties on an object.
-// Q. IS the following CORRECT? (I think it is) :
+          // Q. IS the following CORRECT? (I think it is) :
           // So for our 'todo' array element,
           // that would be:
           // - todo.id e.g. id={todo.id}
@@ -65,10 +83,65 @@ export var TodoList = React.createClass({
 )(TodoList);
 */
 // NEW: (ES6)
+// Was: only todos.
+// Now REDUX Refactor of TodoSearch, we want all 3 properties of the state: todos, showCompleted, searchText. Just return state.
+// AH CRAP. See Below.
+// This now works O.K.
 export default connect(
   (state) => {
     return {
       todos: state.todos,
+      showCompleted: state.showCompleted,
+      searchText: state.searchText,
     };
   }
 )(TodoList);
+
+
+/* ********** */
+/*
+OY! !! !!!
+ME GOOF UP. (above)
+I put return of an object:
+return {
+
+}
+and inside that object instead of key: value object properties, I put a whole object as a key
+return {
+  state,
+}
+And I did it in coolio ES6 way. Woulda been in ES5:
+return {
+  state: state,
+}
+But, methinks you don't want a whole object there, just a scalar, right? right??
+OOF.
+See the perfesser's UDEMY Code below.
+One-liner - just return state; with a semi-colon to finish.
+OOF TWO.
+
+WR__:
+===========================
+ export default connect(
+   (state) => {
+     // return {
+     //   todos: state.todos,
+     // };
+     return {
+       state, // <<< <<< !!! WRONGWRONGWRONG
+     };
+   }
+ )(TodoList);
+ ===========================
+
+
+UDEMY:
+===========================
+export default connect(
+  (state) => {
+    return state;
+  }
+)(TodoList);
+===========================
+*/
+/* /************ */

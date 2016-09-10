@@ -26,7 +26,7 @@ In AddTodo.test.jsx, and here in AddTodo.jsx
 
     lilInspector(this.props, 'this.props, AddTodo createClass()');
 
-// Not Needed:
+// Not Needed, this 2nd level of Object Inspection:
     // lilInspector(this.props.dispatchfoobar99, 'this.props.dispatchfoobar99, AddTodo createClass()');
 
   // ES6 destructuring get dispatch off of props

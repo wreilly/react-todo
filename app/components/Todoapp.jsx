@@ -19,7 +19,8 @@ import TodoList from 'TodoList';
 // "I'm going to switch that to use import, so we can grab the default, which *is* connected to the Redux store":  Lecture 123 06:00
 import AddTodo from 'AddTodo';
 
-var TodoSearch = require('TodoSearch');
+// var TodoSearch = require('TodoSearch');
+import TodoSearch from 'TodoSearch';
 var TodoAPI = require('TodoAPI');
 
 var TodoApp = React.createClass({
@@ -111,6 +112,20 @@ var TodoApp = React.createClass({
   */
   /* /handleToggle NO LONGER needed */
 
+/* YE GODS ****** */
+/* ******** REACT-REDUX ********** */
+/* <TodoSearch />  << No, did not correct error
+    <TodoSearch onSearch={this.handleSearch} />
+
+  <TodoList /> gets simpler: No need for state data nor toggle functionality / handler to be passed:
+*/
+              /*  <TodoList todos={filteredTodos} onToggle={this.handleToggle} />
+              */
+/* /YE GODS ****** */
+
+
+
+
   render: function () {
     // Now, the todos is what the API brought back
     // from localStorage:
@@ -122,20 +137,13 @@ var TodoApp = React.createClass({
     return (
       <div>
         <h1 className="page-title">Todo Redux App (TodoApp.jsx)</h1>
-
         <div className="row">
           <div className="column small-centered small-11 medium-6 large-5">
             <div className="container">
                 <TodoSearch onSearch={this.handleSearch} />
-  {/* ******** REACT-REDUX ********** */}
-  {/* <TodoList /> gets simpler: No need for state data nor toggle functionality / handler to be passed:
-  */}
-                {/*  <TodoList todos={filteredTodos} onToggle={this.handleToggle} />
-                */}
                 <TodoList />
                 <AddTodo onAddTodo={this.handleAddTodo}/>
             </div>
-
           </div>
         </div>
       </div>

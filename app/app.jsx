@@ -15,10 +15,13 @@ store.subscribe( () => {
   console.log("New state: ", store.getState());
 });
 
+/* **** This was a nice temporary Default Todo */
 // Fire an action!
-store.dispatch(actions.addTodo('Learn evermore about JavaScript'));
-store.dispatch(actions.setSearchText('evermore'));
-store.dispatch(actions.toggleShowCompleted()); // across all Todos
+// store.dispatch(actions.addTodo('Learn evermore about JavaScript'));
+// store.dispatch(actions.setSearchText('evermore'));
+// store.dispatch(actions.toggleShowCompleted()); // across all Todos
+
+
 
 // Older way: (Now importing foundation from app.scss)
 // Load foundation
@@ -36,7 +39,6 @@ require('style!css!sass!applicationStyles');
 ReactDOM.render(
   <div>
     <p>React Redux TodoApp - (app.jsx)</p>
-    {/* <TodoApp /> */}
     <Provider store={store}>
       <TodoApp />
     </Provider>
