@@ -41,11 +41,20 @@ describe('AddTodo', () => {
 
 /* WR__ testing: Do I have to call it 'dispatch'?
 How about dispatchfoobar99 ??
+1. PASSES NPM TEST
+2. FAILS NPM START
+
+<< Well, works ok for NPM test
+*UPDATE*
+But, for NPM START, Error:
+ TypeError: dispatchfoobar99 is not a function
+ O.K. changing back to dispatch, works OK in NPM START (browser)
+
 In AddTodo.test.jsx, and here in AddTodo.jsx
 */
 
-
-    var mySpyladenAddTodoForm = TestUtils.renderIntoDocument(<AddTodo dispatchfoobar99={spyFunctionForText} />);
+// dispatchfoobar99 vs. dispatch
+    var mySpyladenAddTodoForm = TestUtils.renderIntoDocument(<AddTodo dispatch={spyFunctionForText} />);
     var $el = $(ReactDOM.findDOMNode(mySpyladenAddTodoForm));
     mySpyladenAddTodoForm.refs.todoTextref.value = todoTextGood;
     TestUtils.Simulate.submit($el.find('form')[0]); // first element of the array

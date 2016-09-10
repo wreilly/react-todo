@@ -26,11 +26,15 @@ In AddTodo.test.jsx, and here in AddTodo.jsx
 
     lilInspector(this.props, 'this.props, AddTodo createClass()');
 
-    lilInspector(this.props.dispatchfoobar99, 'this.props.dispatchfoobar99, AddTodo createClass()');
+// Not Needed:
+    // lilInspector(this.props.dispatchfoobar99, 'this.props.dispatchfoobar99, AddTodo createClass()');
 
   // ES6 destructuring get dispatch off of props
     // var {dispatch} = this.props;
-    var {dispatchfoobar99} = this.props;
+    // Hmm, interesting: for whatever reason (?), right here
+    //   at this point, 'props' only *is* the dispatch function.
+    //   See above object inspection (in NOTES file)
+    var {dispatch} = this.props;
 
     // Validate stuff
     var todoText = this.refs.todoTextref.value;
@@ -48,7 +52,7 @@ In AddTodo.test.jsx, and here in AddTodo.jsx
       // this.props.onAddTodo(todoText);
       // NEW: REDUX dispatch action
       // dispatch(actions.addTodo(todoText));
-      dispatchfoobar99(actions.addTodo(todoText));
+      dispatch(actions.addTodo(todoText));
     } else {
       // Got nothing, do nothing. ( ? )
       // t.b.d.
