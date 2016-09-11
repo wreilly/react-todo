@@ -1,4 +1,5 @@
 var expect = require('expect');
+
 //  PASS VALUES TO DEEPFREEZE, then to our Reducers
 var df = require('deep-freeze-strict');
 
@@ -11,7 +12,7 @@ describe('Reducers',  () => {
     it('should set searchText', () => {
       /* Note: we here manually create / hard-code our action, as opposed to generating it dynamically from the action generator code.
       Why?
-      To avoid, here in testing, that the thing we're focussed on testing isn't breaking actually owing to other code elsewhere (e.g. that generator...)
+      To avoid, here in testing, that the thing we're focussed on testing isn't reporting that it is failing, though actually it might be fine, and the failure is owing to other code elsewhere (e.g. that generator...)
       Cheers.
       */
       var action = {
@@ -119,6 +120,45 @@ This epoch translates to:
       // https://github.com/mjackson/expect#tobegreaterthan
       expect(res02[0].completedAt).toBeGreaterThan(1473070948);
     });
+
+    // N.B. This gets called from app.jsx, to get "initialTodos"
+    it('should add (plural) existing todo items (to todos array)', () => {
+      var todos = [
+        {
+          id: 1,
+          text: "One of many! This was, say, on LocalStorage",
+          completed: true,
+          completedAt: 20000, // 20,000 seconds into 1970
+          createdAt: 3000, // 3,000 seconds into 1970
+        },
+        {
+          id: 2,
+          text: "TWO of many! This was, say, on LocalStorage",
+          completed: false,
+          completedAt: undefined, // never got to this, back in 1970
+          createdAt: 5000, // 5,000 seconds into 1970
+        },
+      ];
+      var action = {
+        type: 'ADD_TODOS',
+        todos,
+      };
+
+      // Hmm, empty array?
+      // expects state and action
+      // Not getting why empty state
+      // Guess we're testing world in which basically
+      //   app is just starting ?, state is empty,
+      //   and the code is supposed to go to LocalStorage
+      //   to populate the state with the todo items it finds there.
+      // hmm. ?
+      var res = reducers.todosReducer(df([]), df(action));
+
+      expect(res.length).toEqual(2); // same array we sling in there, no ? (length is 2)
+      expect(res[0]).toEqual(todos[0]);
+      expect(res[1]).toEqual(todos[1]);
+    });
+
 
   }); // todosReducer
 

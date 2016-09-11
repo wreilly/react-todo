@@ -30,6 +30,34 @@ describe('Actions', () => {
     expect(res).toEqual(action);
   });
 
+
+// *** LOCALSTORAGE Redux Refactoring, going to LocalStorage
+  it('should MERELY generate the add Todos (plural) action object', () => {
+    var todos: [
+      {
+        id: 1,
+        text: 'PLURAL ACTION 1 stuff',
+        completed: false,
+        completedAt: undefined,
+        createdAt: 500,
+      }, {
+        id: 2,
+        text: 'PLURAL ACTION 2 stuff too',
+        completed: false,
+        completedAt: undefined,
+        createdAt: 5000,
+      }
+    ];
+    var action = {
+      type: 'ADD_TODOS',
+      todos,
+    };
+    var res = actions.addTodos(action.todos);
+    expect(res).toEqual(action);
+  });
+
+
+
   it('should generate the toggleShowCompleted action', () => {
     var action = {
       type: 'TOGGLE_SHOW_COMPLETED',

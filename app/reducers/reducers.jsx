@@ -5,6 +5,9 @@ var moment = require('moment');
 // Search text
 export var searchTextReducer = (state = '', action) => {
 
+  console.log("WR__ 666666 searchTextReducer, action.type is: ", action.type);
+
+
   // TESTING DEEP-FREEZE:
   /* action.someNewPropertyAddedToPassedInParameterACTIONInsideReducer = "Updating Passed-In Parameter Is Not Allowed Inside Reducer Pure Function. Deep-Freeze Test Will Catch This And FAIL The Test. Cheers.";
   */
@@ -31,6 +34,10 @@ export var searchTextReducer = (state = '', action) => {
 // showCompletedReducer default: false; TOGGLE_SHOW_COMPLETED
 // default
 export var showCompletedReducer = (state = false, action) => {
+
+  console.log("WR__ 777777 showCompletedReducer, action.type is: ", action.type);
+
+
   switch (action.type) {
     case 'TOGGLE_SHOW_COMPLETED':
       return !state; // All you need.
@@ -49,8 +56,18 @@ export var showCompletedReducer = (state = false, action) => {
 
 
 // ------------------------------
-// todos plural! array List of todos
+// todos plural! array List of todos is the "slice" of state here:
 export var todosReducer = ( state = [], action) => {
+
+/* *** LocalStore refactoring. ** */
+// I don't (yet) have my action here for ADD_TODOS.
+// Does the test running of that action come here, to reducer?
+// I guess it must; let's see. << NO! IT DON'T!
+//           ONLY THE REDUCERS.TEST.JSX COMES TO THIS REDUCERS.JSX!
+// And, if it does, and this code does nothing with it nor to it,
+// I guess it simply continues on with its "return", yes? Hmm.
+console.log("WR__ 88888 todosReducer, action.type is: ", action.type);
+
   switch (action.type) {
     case 'ADD_TODO':
       return [
@@ -75,7 +92,7 @@ export var todosReducer = ( state = [], action) => {
 /* */
       var todosHere = [
         ...state,
-      ]
+      ] // Hmm, guess my code gets away with no final semi-colon here
       return todosHere.map( (todoHere) => {
         if (todoHere.id === action.id) {
           var wasCompletedTF = todoHere.completed;
@@ -99,9 +116,9 @@ export var todosReducer = ( state = [], action) => {
           };
         } else { // This was missing. Cause of error in test array > 1 element!
           return todoHere;
-      }
+        }
 
-    });
+      });
 /* */
 /* ********* /WR__ CODE *********** */
 
@@ -178,6 +195,23 @@ The values in the object you return MAY be updated/modified. Bon.
       */
       // No. The MAP already takes care of returning the array, etc.
       // return todosHere; // ? <<< No. Not needed.
+
+
+/* *** LocalStorage refactoring *** */
+      // LECTURE 125 09:30
+      // We return an array, that:
+      // 1) gets all the (Existing?) todo items on state ?
+      // 2) gets /adds all (?) the todo items on the action
+      // Hmm, what does that mean?
+      // Is # 2 what's in localStorage?
+      // While # 1 is, what, any other ? todo items in state / store ?
+      // Not crystal clear to me how or where the # 1 types come from ...
+      // N.B. This gets called from app.jsx, to get "initialTodos"
+    case 'ADD_TODOS' :
+        return [
+          ...state,
+          ...action.todos,
+        ];
     default:
       return state;
   }

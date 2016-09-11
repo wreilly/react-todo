@@ -21,9 +21,18 @@ import AddTodo from 'AddTodo';
 
 // var TodoSearch = require('TodoSearch');
 import TodoSearch from 'TodoSearch';
-var TodoAPI = require('TodoAPI');
 
+/* ********* REACT-REDUX Refactoring ******* */
+// Going to the Store, ma! No need for the API, here.
+// var TodoAPI = require('TodoAPI');
+
+// After REDUX bit, all that's left is RENDER function, way down below:
 var TodoApp = React.createClass({
+
+/* ****** REACT-REDUX Refactoring ********* */
+/* Now, the app no longer handles state;
+     instead, all in the Redux Store.
+
   getInitialState: function() {
     return {
       // some dummy data, to begin
@@ -51,12 +60,27 @@ var TodoApp = React.createClass({
       // ]
     };
   },
+  */
+/* ****** /REACT-REDUX Refactoring ********* */
+
+
+
+/* ****** REACT-REDUX Refactoring ********* */
+  /*  We no longer use this React life-cycle method.
+       See app.jsx instead, re: todos getting updated.
+
   // React Life-cycle. Gets fired after either
   // PROPS *or* STATE changes:
   componentDidUpdate: function () {
     // *ANY* change (to State) (?) we update the todos array
     TodoAPI.setTodos(this.state.todos);
   },
+/* ****** REACT-REDUX Refactoring ********* */
+
+/* ****** REACT-REDUX Refactoring ********* */
+  /* No longer need hander:
+       Instead now is Actions and Reducers.
+
   handleAddTodo: function (text) {
     // alert('new todo! : ' + text); // needed a '+', not a ',' like works in console.log. hokay
 
@@ -70,19 +94,31 @@ var TodoApp = React.createClass({
           id: uuid(),
           text: text,
           completed: false,
-          /* moment() "gets called as a *function*" and "the unix *method*" which returns our timestamp. */
+          // moment() "gets called as a *function*" and "the unix *method*" which returns our timestamp.
           createdAt: moment().unix(),
           completedAt: undefined,
         }
       ]
     });
   },
-  handleSearch: function (showCompleted, searchText) {
-    this.setState({
+  */
+/* ****** /REACT-REDUX Refactoring ********* */
+
+
+/* ****** REACT-REDUX Refactoring ********* */
+  /* No longer need hander:
+       Instead now is Actions and Reducers.
+
+    handleSearch: function (showCompleted, searchText) {
+      this.setState({
       showCompleted: showCompleted,
       searchText: searchText.toLowerCase() // regardless of input, search it up
     });
   },
+  */
+/* ****** /REACT-REDUX Refactoring ********* */
+
+
   /* ******** REACT-REDUX ********** */
   /* handleToggle NO LONGER needed... */
   /* Why? Because w. Redux, this "middle" component (TodoList) can get
@@ -112,7 +148,13 @@ var TodoApp = React.createClass({
   */
   /* /handleToggle NO LONGER needed */
 
-/* YE GODS ****** */
+
+/* YE GODS ******
+I pulled these lines, which were properly JSX Comments
+{-/-* LINES *-/-},
+out of the render | return | <div> area, while debugging horrendous problem.
+Twasn't truly necessary.
+ Sheers. */
 /* ******** REACT-REDUX ********** */
 /* <TodoSearch />  << No, did not correct error
     <TodoSearch onSearch={this.handleSearch} />
@@ -127,12 +169,18 @@ var TodoApp = React.createClass({
 
 
   render: function () {
+
+/* ********* REACT-REDUX Refactoring ******* */
+    // Going to the Store, ma! No need for the API, here.
+    /*
     // Now, the todos is what the API brought back
     // from localStorage:
     var {todos, showCompleted, searchText } = this.state;
     // Next, if we' filtering (checkbox; search text),
     // then we use the API to apply that filter:
     var filteredTodos = TodoAPI.filterTodos(todos, showCompleted, searchText);
+    */
+/* ********* /REACT-REDUX Refactoring ******* */
 
     return (
       <div>
@@ -140,9 +188,15 @@ var TodoApp = React.createClass({
         <div className="row">
           <div className="column small-centered small-11 medium-6 large-5">
             <div className="container">
-                <TodoSearch onSearch={this.handleSearch} />
+              {/*   *** REACT-REDUX Refactoring *****
+                    We remove passing down the handers, no longer used, instead these two components can do their own dispatch of actions.
+                    (Right inside anonymous arrow functions in the onChange attribute of the Input element, in fact, they make the dispatch. Groovy.)
+              */}
+                <TodoSearch />
+{/*                <TodoSearch onSearch={this.handleSearch} /> */}
                 <TodoList />
-                <AddTodo onAddTodo={this.handleAddTodo}/>
+                <AddTodo />
+{/*                 <AddTodo onAddTodo={this.handleAddTodo}/> */}
             </div>
           </div>
         </div>

@@ -11,9 +11,31 @@ var TodoApp = require('TodoApp');
 var actions = require('actions');
 var store = require('configureStore').configure();
 
+// *** LOCALSTORAGE Redux Refactoring, going to LocalStorage
+var TodoAPI = require('TodoAPI');
+
 store.subscribe( () => {
-  console.log("New state: ", store.getState());
+  var state = store.getState();
+  console.log("New state (using LocalStorage now): ", state);
+
+  // *** NOW LOCALSTORAGE Redux Refactoring, Store now going to LocalStorage ...
+  /* *****
+hah!
+- Used to be on React life-cycle componentDidUpdate, in TodoApp.jsx. todos went to app state.
+- Now instead here in the Redux store.subscribe() listener, todos going to localStorage.
+Cool.
+  */
+  TodoAPI.setTodos(state.todos);
 });
+
+// *** LOCALSTORAGE Redux Refactoring, going to LocalStorage
+// New: Need a way to load up any existing todo items.
+// Use our API to get them out of LocalStorage. (May or may not be any)
+var initialTodos = TodoAPI.getTodos();
+// New Action and Reducer,  for BULK ADD of Todo items to todos
+store.dispatch(actions.addTodos(initialTodos));
+
+
 
 /* **** This was a nice temporary Default Todo */
 // Fire an action!

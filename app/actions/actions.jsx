@@ -32,6 +32,17 @@ export var addTodo = (todoText) => {
   };
 };
 
+
+// *** LOCALSTORAGE Redux Refactoring, going to LocalStorage
+// Called in app.jsx
+export var addTodos = (todos) => {
+  return {
+    type: 'ADD_TODOS',
+    // ES6. (ES5 =  todos: todos, )
+    todos, // final comma should be okay
+  };
+};
+
 // toggleShowCompleted - no params
 // TOGGLE_SHOW_COMPLETED
 
