@@ -52,7 +52,10 @@ In AddTodo.test.jsx, and here in AddTodo.jsx
       // this.props.onAddTodo(todoText);
       // NEW: REDUX dispatch action
       // dispatch(actions.addTodo(todoText));
-      dispatch(actions.addTodo(todoText));
+/* *** FIREBASE Refactoring! ********** */
+// Now the Action we want is the one that goes to Firebase.
+      // dispatch(actions.addTodo(todoText));
+      dispatch(actions.startAddTodo(todoText));
     } else {
       // Got nothing, do nothing. ( ? )
       // t.b.d.

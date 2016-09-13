@@ -21,6 +21,7 @@ import {configure} from 'configureStore';
 // var TodoList = require('TodoList');
 
 // NEW ES6 import, for export, export default
+// *UPDATE* This explanation ain't right. SEE BELOW on TODO instead. ********
 // First bit is the var name: 'ConnectedTodoList'
 // I guess (?) that is a convention:
 // Your component name (TodoList) concatenated onto 'Connected' when you pass it to Connect()(TodoList)
@@ -33,11 +34,11 @@ import ConnectedTodoList, {TodoList} from 'TodoList';
 // var Todo = require('Todo');
 // NEW ES6:
 // Another shot at this: (MBU: My Best Understanding)
-// 1. ConnectedTodo is imported from 'Todo'
-// 2. {Todo} is also imported from 'Todo'
-// 3. 'Todo' is rather plain quoted name of JS module/file, kinda just like require used ('Todo') in parens and quotes.
-// # 1 doesn't need the destructuring, because ... ? connect knows about it (?). And yet we do "import" it from 'Todo'. Hmm.
-// # 2 does use destructuring, to extract/obtain a rather plain old JS var from out of an imported module, namely 'Todo'
+// 1. ConnectedTodo is imported from 'Todo'. ok.
+// 2. {Todo} is also imported from 'Todo'. ok.
+// 3. 'Todo' is rather plain quoted name of JS module/file, kinda just like require used ('Todo') in parens and quotes. ok.
+// # 1 doesn't need the destructuring, because ...  connect knows about it. Why? Because it is the DEFAULT connect export, bub. And yes we do "import" it from 'Todo'.
+// # 2 does use destructuring, to extract/obtain a plain old JS var from out of an imported module, namely 'Todo'. That's only used here, for testing.
 import ConnectedTodo, {Todo} from 'Todo';
 
 describe('TodoList', () => {
@@ -91,6 +92,11 @@ describe('TodoList', () => {
     // OLD plain old Todo:
     // var todosComponents = TestUtils.scryRenderedComponentsWithType(todoList, Todo);
     // NEW: it's the CONNECTEDTodo ...
+    /* That is, even though this code (this test file) does not explicitly list "ConnectedTodo" again, the parent component code does: TodoList.jsx - it renders a list, which itself renders out the individual Todo items.
+    So, here in this test code, we call those "ConnectedTodo" items.
+    That is what the "scry" thing here finds within the list.
+    It finds "ConnectedTodo" items.
+    */
     var todosComponents = TestUtils.scryRenderedComponentsWithType(todoList, ConnectedTodo);
 
     expect(todosComponents.length).toBe(todos.length); // e.g. 2 in our test data above.

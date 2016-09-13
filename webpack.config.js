@@ -33,6 +33,10 @@ module.exports = {
       './app/api',
     ],
     alias : {
+      // Further update (Lecture 131 07:50)
+      // with this, e.g. in actions.jsx, we can put
+      //  ... from 'app/firebase/'  << with no explicit alias for firebase here in webpack.config.js. Bueno.
+      app: 'app', // NO final slash.
 //    Now we use modulesDirectories instead. Ta-da!
 //      TodoApp: 'app/components/TodoApp.jsx',
 // But we still use alias for some other things:

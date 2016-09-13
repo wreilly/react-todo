@@ -14,6 +14,21 @@ var store = require('configureStore').configure();
 // *** LOCALSTORAGE Redux Refactoring, going to LocalStorage
 var TodoAPI = require('TodoAPI');
 
+// FIREBASE
+// Hmm, different use of import. No 'from'. Lecture 126 8:35
+// "Since we're not exporting any variables..." << Does he mean firebase/index.js? Or this app.jsx?
+// use import followed by the path.
+// We leave off 'from' - because:
+// We "don't care about creating any variables from the module's exports" (?) << We don't create a variable here in app.jsx, from out of what the imported module makes available? "exports"? Huh?
+// I guess I think this means, all we do here is import it, such that the code over in firebase/index.js actually just gets run.
+// That code doesn't interact any further with the code here in app.jsx. No variables over there, nor over here, reference one another, interact, etc. ? Can this be correct? Hmm.
+
+/* *** FIREBASE Refactoring into the real Todo App *** */
+// We need to COMMENT OUT the playground now,
+//  because it "deletes our entire database" ... (tsk, tsk)
+/* **** import './../playground/firebase/index'; // ? *** */
+/* *** /FIREBASE Refactoring into the real Todo App *** */
+
 store.subscribe( () => {
   var state = store.getState();
   console.log("New state (using LocalStorage now): ", state);

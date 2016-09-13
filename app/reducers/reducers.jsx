@@ -68,17 +68,24 @@ export var todosReducer = ( state = [], action) => {
 // I guess it simply continues on with its "return", yes? Hmm.
 console.log("WR__ 88888 todosReducer, action.type is: ", action.type);
 
+
+//* *** FIREBASE Refactoring *** */
+// This logic going to be moved for Firebase:
   switch (action.type) {
     case 'ADD_TODO':
       return [
         ...state,
-        {
-          id: uuid(),
-          text: action.text,
-          completed: false,
-          createdAt: moment().unix(),
-          completedAt: undefined,
-        }
+        /* Now, the reducer doesn't need to do anything about the passed-in action - just grabs the whole todo, prepared as it is, elsewhere (actions.jsx)
+        */
+        action.todo,
+        // This earlier code has now been moved to actions.jsx:
+        // {
+        //   id: uuid(),
+        //   text: action.text,
+        //   completed: false,
+        //   createdAt: moment().unix(),
+        //   completedAt: undefined,
+        // }
       ];
 
     // case for TOGGLE_TODO
