@@ -54,6 +54,7 @@ In AddTodo.test.jsx, and here in AddTodo.jsx
       // dispatch(actions.addTodo(todoText));
 /* *** FIREBASE Refactoring! ********** */
 // Now the Action we want is the one that goes to Firebase.
+// (Note that, we still merely send it the text.)
       // dispatch(actions.addTodo(todoText));
       dispatch(actions.startAddTodo(todoText));
     } else {

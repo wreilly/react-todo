@@ -44,13 +44,38 @@ describe('Reducers',  () => {
 
   describe('todosReducer', () => {
     it('should add new todo (singular)', () => {
+  /* *** FIREBASE Refactoring **** */
+  // Yep: (see also actions.test.jsx)
+      var todo_handmade = {
+        id: 'handmade_id_1234',
+        text: 'HANDMADEVAR REDUCER Write me a hard-coded Todo inside Reducer test, for Firebase (using null)',
+        completed: false,
+        completedAt: null,
+        createdAt: 1000,
+      };
+
       var action = {
         type: 'ADD_TODO',
-        text: 'Walk that dog, once again',
+        /* *** FIREBASE Refactoring **** */
+        // text: 'Walk that dog, once again',
+        todo: todo_handmade,
       };
       var res = reducers.todosReducer( df([]), df(action));
+      // Hmm, don't pass in the todo (below), pass in the whole action (above)
+      // var res = reducers.todosReducer( df([]), df(action.todo));
+
+// lilInspector(res, 'res! todosReducer([], the action todo ~ handmade)');
+/* Nuttin'!:
+*** !!!! lilInspector !!!! ****'
+LOG: 'objectVariableNameThisTime : res! todosReducer([], the action todo ~ handmade)'
+LOG: '**** !!!! /END lilInspector !!!! ***
+*/
+
       expect(res.length).toEqual(1); // added 1 todo to array
-      expect(res[0].text).toEqual(action.text);
+      // expect(res[0].text).toEqual(action.text);
+      expect(res[0].text).toEqual(action.todo.text);
+      // Also (why not):
+      expect(res[0]).toEqual(action.todo);
     });
 
     // case for TOGGLE_TODO

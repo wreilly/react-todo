@@ -39,11 +39,20 @@ export var addTodo = (text) => {
 // I chose to call it 'todoText' (why not). NON-conventional me.
 // But then I cannot use the ES6 thing: todoText,
 // No sir, I gotta do: text: todoText,
-/* *** FIREBASE Refactoring *** */
-// Now this action takes a whole Todo, not just the text
 
-// export var addTodo = (todoText) => {
-export var addTodo = (todo) => { // whole todo
+/* *** FIREBASE Refactoring *** */
+// Now this action takes a whole Todo, not just the text.
+// Why?
+// At least in part because: the ID for the todo now
+//   comes from Firebase. So we grab the whole todo,
+//   not just its text, to add it to our store/state/app
+//   We used to (pre-Firebase) effectively build the todo
+//   right here in the app. All we needed was the text for it.
+//   But now we build the todo ID over in Firebase. So we
+//   now get the whole todo here in addTodo, to simply
+//   append/attach/add the whole todo to our app/store/state.
+// export var addTodo = (todoText) => { // << WAS: text only
+export var addTodo = (todo) => { // NOW: whole todo
   return {
     type: 'ADD_TODO',
     // whole todo:
@@ -70,17 +79,17 @@ export var startAddTodo = (text) => {
           completedAt: null, // Firebase you use null to essentially remove it.
         };
     // Here, a new Reference to Firebase.
-    // Store all the todos for our app
+    // Store all the todos for our app, in this Firebase 'todos' array
     // Now our data is on our Firebase database (good) ...
     var todoRef = firebaseRef.child('todos').push(todo);
-    // ...But, not yet added to our app, to our store...
-    /* So ...: This Dispatch (below) of the addTodo action (above) will send the new Todo to the Store, that is, this step puts the Todo onto / into the State for our React-Redux application.
+    // ...But, the todo is not yet added to our app, to our store... / state...
+    /* So ...: This Dispatch (right below) of the addTodo action (found above) will send the new Todo to the Store, that is, this step puts the Todo onto / into the State for our React-Redux application.
     Right?
     (And, that update to the state causes our React component to be re-rendered, which adds the new todo to the browser.)
     */
     return todoRef.then( () => {
       dispatch(addTodo({
-        ...todo,
+        ...todo, // all the properties on the new todo, plus...
         id: todoRef.key, // coming from Firebase!
       }))
     }

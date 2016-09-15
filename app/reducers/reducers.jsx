@@ -75,7 +75,9 @@ console.log("WR__ 88888 todosReducer, action.type is: ", action.type);
     case 'ADD_TODO':
       return [
         ...state,
-        /* Now, the reducer doesn't need to do anything about the passed-in action - just grabs the whole todo, prepared as it is, elsewhere (actions.jsx)
+        /* Now, the reducer:
+        1) no longer creates the todo object, and so:
+        2) doesn't need to do anything about the passed-in action - just grabs the whole todo, prepared as it is, elsewhere (actions.jsx)
         */
         action.todo,
         // This earlier code has now been moved to actions.jsx:
