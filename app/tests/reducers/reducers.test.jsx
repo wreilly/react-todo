@@ -3,6 +3,8 @@ var expect = require('expect');
 //  PASS VALUES TO DEEPFREEZE, then to our Reducers
 var df = require('deep-freeze-strict');
 
+import moment from 'moment';
+
 var lilInspector = require('lilInspector');
 
 var reducers = require('reducers');
@@ -78,73 +80,192 @@ LOG: '**** !!!! /END lilInspector !!!! ***
       expect(res[0]).toEqual(action.todo);
     });
 
-    // case for TOGGLE_TODO
-    // match item of action.id e.g. 1
-    // modify - set completed ! oppositeC
-    // set commpleted at timestamp or clear
 
-// pass array as default; toggle action; check has completed opposite
-// todos array w realistic todo item
-//action with that id #
-// assert completedFlipped
 
-    it('should toggle a single todo  --- completed or not; timestamp or clear', () => {
+/* *** FIREBASE REFACTORING *** TOGGLE_TODO -> UPDATE_TODO */
+    // case for TOGGLE_TODO -> now UPDATE_TODO
+    it('should UPDATE (from having started a toggle) a single todo  --- completed or not; timestamp or clear', () => {
       var todosTest = [
         {
           id: 1,
-          text: "Toggle this one!",
+          text: "FIREBASE ? Toggle this one!",
           completed: true,
           completedAt: 2000, // 2,000 seconds into 1970
           createdAt: 1000, // 1,000 seconds into 1970
         },
         {
           id: 2,
-          text: "Leave this one untouched, kids!",
+          text: "FIREBASE ? Leave this one untouched, kids!",
           completed: false,
           completedAt: undefined, // never got to this, back in 1970
           createdAt: 3000, // 3,000 seconds into 1970
         },
       ];
-      var action = {
-        type: 'TOGGLE_TODO',
-        id: 1,
-      };
-      var res = reducers.todosReducer(df(todosTest), df(action));
-      expect(res[0].completed).toBe(false);
-      expect(res[0].completedAt).toBe(undefined);
-// Let's toggle again!
-// NOPE!:      var res = reducers.todosReducer(df(todosTest), df(action));
-// Hmm, thought I could pass res in.
-// TypeError: Cannot read property 'id' of undefined
-      // var res02 = reducers.todosReducer(df(res), df(action));
-
-      // console.log("WR__ res res[0] res[0].completed : " + res + " : " + res[0] + " : " + res[0].completed);
-
-      lilInspector(res[0], 'res[0] first run, completed false');
-
-      var res02 = reducers.todosReducer(df(res), df(action));
-
-      lilInspector(res02[0], 'res02[0] second run, completed true');
-      lilInspector(res02[0], 'res02[0] second run, completedAt > 1473070948');
-
-      expect(res02[0].completed).toBe(true);
-      // http://www.unixtimestamp.com/
-      /*
-      1473068041 seconds since Jan 01 1970. (UTC)
-      This epoch translates to:
-      09/05/2016 @ 9:34am (UTC)
-      2016-09-05T09:34:01+00:00 in ISO 8601
-
-      1473070948 seconds since Jan 01 1970. (UTC)
-
-This epoch translates to:
-
-09/05/2016 @ 10:22am (UTC)
-2016-09-05T10:22:28+00:00 in ISO 8601
+      /* *UPDATE* Yeah, but here in REDUCERS we are on 2nd step, and the action is now an OBJECT (SYNCH).
+      1st step action was a FUNCTION (ASYNCH), and it called Firebase, but when 'done' it generates a SYNCH Action OBJECT, to send here in Reducer.
+      Cheers
       */
-      // https://github.com/mjackson/expect#tobegreaterthan
-      expect(res02[0].completedAt).toBeGreaterThan(1473070948);
+      // Corrected above >> With Firebase Asynch, action is no longer an OBJECT. It's a FUNCTION. << Not correct! See above.
+      // ORIG (Pre-Firebase)
+      // var action = {
+      //   type: 'TOGGLE_TODO',
+      //   id: 1,
+      // };
+      // FIREBASE REFACTOR: Now includes 'updates'
+      // Like in actions.test.jsx, let's pass in an update of F -> T ??
+      var updates = {
+        completed: true,
+        completedAt: moment().unix(),
+      };
+
+      // SIMPLIFY Test. T -> F instead
+      // var updates = {
+      //   completed: false,
+      //   completedAt: null,
+      // };
+
+
+
+      // Let's do id:2, which has false, we'll set to true.
+      // Back to id:1 which has true we'll make false
+      // Back to id:2 which has false we'll make true
+      var action = {
+        // type: 'TOGGLE_TODO',
+        type: 'UPDATE_TODO',
+        // id: 1,
+        // This gets same value (1), but comes from the array now, not hard-coded here. Hmm.
+        id: todosTest[1].id, // for id:2
+        updates: updates,
+      };
+
+// NOPE! NOT A FUNCTION, HERE IN THIS TEST:
+      // Remember! "Toggle" means send in the NEGATE of the completed value T -> F, F-> T. Gracias.
+      // var action = actions.startToggleTodo(todosTest[0].id, !todosTest[0].completed);
+      // WR__ QUESTION
+      // What do we do now, w. above? ...
+
+      var res = reducers.todosReducer(df(todosTest), df(action));
+
+      // NEW Assertion (FIREBASE refactoring)
+      // Prove that a property *not* in the updates
+      //   also remains intact, through the reducer.
+      // expect(res[0].text).toEqual(todosTest[0].text);
+      expect(res[1].text).toEqual(todosTest[1].text);
+
+
+      // expect(res[0].completed).toBe(false);
+      expect(res[1].completed).toEqual(updates.completed);
+      // expect(res[1].completed).toBe(true);
+
+      // expect(res[0].completedAt).toBe(undefined);
+      expect(res[1].completedAt).toEqual(updates.completedAt);
+      /* http://www.epochconverter.com/
+      1474020444
+      Your time zone: 9/16/2016, 6:07:21 AM GMT-4:00 DST
+      */
+      var unixTimeWhenIWroteTest = 1474020444;
+      expect(res[1].completedAt).toBeGreaterThan(unixTimeWhenIWroteTest);
+
+
+// Let's toggle again! <<<< DO THIS BIT LATER
+      // lilInspector(res[0], 'res[0] first run, completed false');
+      //
+      // var res02 = reducers.todosReducer(df(res), df(action));
+      //
+      // lilInspector(res02[0], 'res02[0] second run, completed true');
+      // lilInspector(res02[0], 'res02[0] second run, completedAt > 1473070948');
+      //
+      // expect(res02[0].completed).toBe(true);
+      // // http://www.unixtimestamp.com/
+      // /*
+      // 1473070948 seconds since Jan 01 1970. (UTC)
+      // 09/05/2016 @ 10:22am (UTC)
+      // */
+      // // https://github.com/mjackson/expect#tobegreaterthan
+      // expect(res02[0].completedAt).toBeGreaterThan(1473070948);
     });
+/* *** /FIREBASE REFACTORING *** TOGGLE_TODO -> UPDATE_TODO */
+
+
+
+
+
+
+/* *** PRE-FIREBASE REFACTORING *** TOGGLE_TODO */
+//     // case for TOGGLE_TODO
+//     // match item of action.id e.g. 1
+//     // modify - set completed ! opposite
+//     // set completed at timestamp or clear
+//
+//     // pass array as default; toggle action; check has completed opposite
+//     // todos array w realistic todo item
+//     //action with that id #
+//     // assert completedFlipped
+//
+//     it('should toggle a single todo  --- completed or not; timestamp or clear', () => {
+//       var todosTest = [
+//         {
+//           id: 1,
+//           text: "Toggle this one!",
+//           completed: true,
+//           completedAt: 2000, // 2,000 seconds into 1970
+//           createdAt: 1000, // 1,000 seconds into 1970
+//         },
+//         {
+//           id: 2,
+//           text: "Leave this one untouched, kids!",
+//           completed: false,
+//           completedAt: undefined, // never got to this, back in 1970
+//           createdAt: 3000, // 3,000 seconds into 1970
+//         },
+//       ];
+//       var action = {
+//         type: 'TOGGLE_TODO',
+//         id: 1,
+//       };
+//       var res = reducers.todosReducer(df(todosTest), df(action));
+//       expect(res[0].completed).toBe(false);
+//       expect(res[0].completedAt).toBe(undefined);
+// // Let's toggle again!
+// // NOPE!:      var res = reducers.todosReducer(df(todosTest), df(action));
+// // Hmm, thought I could pass res in.
+// // TypeError: Cannot read property 'id' of undefined
+//       // var res02 = reducers.todosReducer(df(res), df(action));
+//
+//       // console.log("WR__ res res[0] res[0].completed : " + res + " : " + res[0] + " : " + res[0].completed);
+//
+//       lilInspector(res[0], 'res[0] first run, completed false');
+//
+//       var res02 = reducers.todosReducer(df(res), df(action));
+//
+//       lilInspector(res02[0], 'res02[0] second run, completed true');
+//       lilInspector(res02[0], 'res02[0] second run, completedAt > 1473070948');
+//
+//       expect(res02[0].completed).toBe(true);
+//       // http://www.unixtimestamp.com/
+//       /*
+//       1473068041 seconds since Jan 01 1970. (UTC)
+//       This epoch translates to:
+//       09/05/2016 @ 9:34am (UTC)
+//       2016-09-05T09:34:01+00:00 in ISO 8601
+//
+//       1473070948 seconds since Jan 01 1970. (UTC)
+//
+// This epoch translates to:
+//
+// 09/05/2016 @ 10:22am (UTC)
+// 2016-09-05T10:22:28+00:00 in ISO 8601
+//       */
+//       // https://github.com/mjackson/expect#tobegreaterthan
+//       expect(res02[0].completedAt).toBeGreaterThan(1473070948);
+//     });
+/* *** /PRE-FIREBASE REFACTORING *** TOGGLE_TODO */
+
+
+
+
+
+
 
     // N.B. This gets called from app.jsx, to get "initialTodos"
     it('should add (plural) existing todo items (to todos array)', () => {

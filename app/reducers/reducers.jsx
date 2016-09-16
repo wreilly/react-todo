@@ -102,7 +102,7 @@ console.log("WR__ 88888 todosReducer, action.type is: ", action.type);
 // Lecture 134  6:14
       var todosHere = [
         ...state,
-      ]
+      ];
       return todosHere.map( (todoHere) => {
         if (todoHere.id === action.id) {
           /* FIREBASE Refactoring */

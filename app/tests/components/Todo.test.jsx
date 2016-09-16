@@ -4,9 +4,15 @@ var ReactDOM = require('react-dom');
 var TestUtils = require('react-addons-test-utils');
 var $ = require('jquery');
 
+import * as actions from 'actions';
+
+// ES6 import, in addition to destructuring:
+import {Todo} from 'Todo';
 // OLD ES5:
 // var Todo = require('Todo');
-var {Todo} = require('Todo'); // ES6 destructuring can get the "raw old original React Todo component" off the 'Todo' module
+// ES6 destructuring
+// var {Todo} = require('Todo');
+// ES6 destructuring can get the "raw old original React Todo component" off the 'Todo' module
 // The 'Todo' module/component remember does its export in 2 ways:
 // 1. export default is the Reduxed Connected Todo component
 // 2. export to named var 'Todo' is the raw old original React component 'Todo'
@@ -21,14 +27,18 @@ describe('Todo', () => {
   // OLD:
   // it('should call onToggle prop with the id, on click', () => {
   // NEW: Redux Testing:
-  it('should dispatch the TOGGLE_TODO action on click', () => {
+  // it('should dispatch the TOGGLE_TODO action on click', () => {
+  /* *** FIREBASE Refactoring *** */
+  it('should dispatch the UPDATE_TODO action on click', () => {
     var canIUseVarHere = 199;
     var todoData = {
       id: canIUseVarHere,
       text: "Write a todo test",
       completed: true,
+      completedAt: 5000,
+      createdAt: 1000,
     }
-    // TODO next ...
+
     // https://facebook.github.io/react/docs/test-utils.html
 
     var spyFunc = expect.createSpy();
@@ -66,10 +76,22 @@ describe('Todo', () => {
     // since that is the data, on it
     // expect(spyFunc).toHaveBeenCalledWith(canIUseVarHere);
     // NEW: the func (spy) is dispatch, and it is called with the action object:
-    expect(spyFunc).toHaveBeenCalledWith({
-      type: 'TOGGLE_TODO',
-      id: todoData.id, // that is our 199 = ok
-    }); //
+    // expect(spyFunc).toHaveBeenCalledWith({
+    //   type: 'TOGGLE_TODO',
+    //   id: todoData.id, // that is our 199 = ok
+    // }); //
+
+/* ** FIREBASE REfactoring *** */
+    // We no longer call spy with Action OBJECT.
+    // Now we call spy with Action FUNCTION
+    //   Need to import actions (above), to invoke that ... startToggleTodo()
+
+    // Define a var for the action, which is now a FUNCT:
+    // Send in the ! NEGATE of completed T/F
+    var action = actions.startToggleTodo(todoData.id, !todoData.completed);
+
+    expect(spyFunc).toHaveBeenCalledWith(action);
+
     // Nope, not yet:
     // expect(testTodo.todoData.completed).toBe(false);
     /* TypeError: Cannot read property 'completed' of undefined

@@ -3,8 +3,10 @@
 
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-
+import moment from 'moment';
 var expect = require('expect');
+
+import firebase, {firebaseRef} from 'app/firebase/';
 
 var actions = require('actions');
 
@@ -131,13 +133,107 @@ describe('Actions', () => {
     expect(res).toEqual(action);
   });
 
-  it('should generate the toggle todo action (completed, or not)', () => {
+/* *** FIREBASE Refactoring *** */
+  // it('should generate the toggle todo action (completed, or not)', () => {
+  it('should generate the UPDATE todo action (completed, or not) & UPDATES ETC.', () => {
+    // Let's pass in an update of F -> T ??
+    var updates = {
+      completed: true,
+      completedAt: moment().unix(),
+    };
     var action = {
-      type: 'TOGGLE_TODO',
+      // type: 'TOGGLE_TODO',
+      type: 'UPDATE_TODO',
       id: 79,
-    }
-    var res = actions.toggleTodo(action.id); // 79
+      updates: updates,
+    };
+    // var res = actions.toggleTodo(action.id); // 79
+    var res = actions.updateTodo(action.id, action.updates); // 79, true, timestamp...
     expect(res).toEqual(action);
   });
+
+/* *** FIREBASE Refactoring *** */
+// Lecture 135 7:30
+  describe('Tests with Firebase todos', () => {
+    var testTodoRef;
+
+    // MOCHA:
+    // Asynch
+    beforeEach( (done) => {
+      testTodoRef = firebaseRef.child('todos').push();
+
+      testTodoRef.set({
+        text: 'Firebase actions test',
+        completed: false,
+        createdAt: 2345,
+      }).then( () => done() ); // when promise returns, we fire done()
+      // Same as one-liner above:
+      // }).then( () => {
+      //   // when promise returns, we fire done()
+      //   done();
+      // });
+    });
+
+    // Clean up after testing!
+    afterEach( (done) => {
+      testTodoRef.remove().then( () => done() );
+    });
+
+    it('should toggle todo and dispatch UPDATE_TODO action', (done) => {
+      // Optional: Pass in data for your store.
+      const store = createMockStore({});
+      // The ID is the key from Firebase:
+      // Set the 'completed' value in hard-coded manner to true (since it's false in our test Todo (above), and we want to toggle it.)
+      // (I suppose we could negate the value on that object; oh well)
+      const action = actions.startToggleTodo(testTodoRef.key, true);
+
+      /*
+      Okay: the then promise gets 2 functions passed to it: 1st is the success; 2nd is the fail. We just pass in done; if/when it fails any error messages get passed back via done to then.
+      */
+      store.dispatch(action).then(
+        // 1st:
+        () => {
+          // returns array of all actions that were fired...
+          const mockActions = store.getActions();
+
+          // Note: it's tricky to assert EQUAL on the unix timestamp ... inside updates{ completedAt: ____ }
+          // Better to just use toINCLUDE:
+          // expect(mockAction[0]).toEqual({
+
+// FAILING ( ? ) 5000 milliseconds....
+          expect(mockActions[0]).toInclude({
+            type: 'UPDATE_TODO',
+            id: testTodoRef.key,
+            // updates: {
+            // }
+          });
+
+// PASSES:
+        //  expect(mockActions[0].updates).toInclude({
+        //    completed: true,
+        //  });
+
+// PASSES:
+        //  expect(mockActions[0].updates.completedAt).toExist();
+
+
+/* http://www.epochconverter.com/
+1474046932
+Your time zone: 9/16/2016, 1:28:52 PM GMT-4:00 DST
+*/
+var unixTimeWhenIWroteTest = 1474046932;
+
+// PASSES:
+        //  expect(mockActions[0].updates.completedAt).toBeGreaterThan(unixTimeWhenIWroteTest);
+        //
+         done(); // Don't forgte to call done()!
+        //
+      }, // /1st
+        // 2nd:
+        done); // just 'done' not 'done()' We're not firing it, but passing it
+
+    });
+
+  })
 
 });
