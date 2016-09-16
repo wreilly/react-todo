@@ -75,7 +75,7 @@ describe('Actions', () => {
   it('should create todo and dispatch ADD_TODO', (done) => {
     // call with empty store {}
     const store = createMockStore({});
-    const todoText = 'My aysnch todo item';
+    const todoText = 'My aysnch todo item, from actions.test.jsx';
 
     store.dispatch(actions.startAddTodo(todoText)).then( () => {
       // success handler

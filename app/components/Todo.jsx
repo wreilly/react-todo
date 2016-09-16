@@ -43,7 +43,10 @@ export var Todo = React.createClass({
 
           Update:
          */}
-         dispatch(actions.toggleTodo(id));
+         /* *** FIREBASE Refactoring *** */
+        //  dispatch(actions.toggleTodo(id));
+        // NOTE: We received completed in one state; clicking here NEGATES that, so we use the EXCLAMATION POINT here: !completed. cheers.
+         dispatch(actions.startToggleTodo(id, !completed));
 
         }}>
 {/* We'll remove the now veddy long 'id'

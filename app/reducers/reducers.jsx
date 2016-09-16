@@ -95,39 +95,74 @@ console.log("WR__ 88888 todosReducer, action.type is: ", action.type);
     // modify - set completed ! oppositeC
     // set commpleted at timestamp or clear
     // HMM. STATE is that passed-in array, of todos
-    case 'TOGGLE_TODO':
 
-/* ********* WR__ CODE *********** */
-/* */
+    // case 'TOGGLE_TODO':
+/* *** FIREBASE Refactoring *** */
+    case 'UPDATE_TODO':
+// Lecture 134  6:14
       var todosHere = [
         ...state,
-      ] // Hmm, guess my code gets away with no final semi-colon here
+      ]
       return todosHere.map( (todoHere) => {
         if (todoHere.id === action.id) {
-          var wasCompletedTF = todoHere.completed;
-          // -- var flipWasCompletedTF = !wasCompletedTF;
-          // -- todoHere.completed = !todoHere.completed; // <<< NO!
-          // -- if (todoHere.completedAt) {
-          // --   // Held some value (timestamp)
-          // --   todoHere.completedAt = undefined; // clear it out // <<< NO!
-          // -- } else {
-          // --   todoHere.completedAt = moment().unix(); // <<< NO!
-          // -- }
-          return {
-              ...todoHere,
-              completed: !wasCompletedTF,
-              completedAt: !wasCompletedTF ? moment().unix() : undefined ,
-// -- NOPE:              completedAt: completed ? moment().unix() : undefined , // << ReferenceError: completed is not defined
+          /* FIREBASE Refactoring */
+          // We no longer need this logic here
+          //   We've already dealt with this, previously,
+          //   in the startToggleTodo asynchronous action
 
-// -- WORKS:
-              // -- completed: flipWasCompletedTF,
-              // -- completedAt: flipWasCompletedTF ? moment().unix() : undefined ,
-          };
-        } else { // This was missing. Cause of error in test array > 1 element!
+          // var wasCompletedTF = todoHere.completed;
+          // return {
+          //     ...todoHere,
+          //     completed: !wasCompletedTF,
+          //     completedAt: !wasCompletedTF ? moment().unix() : undefined ,
+
+            return {
+              // SPREAD operator
+              /* Interesting: When you use two in succession like this, you get the second one to override any properties from the first one.
+              So ...todo has all the old ones, and whatever might be on ...actions.updates will correctly update those particular properties, leaving the others unchanged. cool.
+              */
+              ...todoHere,
+              ...action.updates,
+            }
+        } else {
           return todoHere;
         }
 
       });
+
+/* *** /FIREBASE Refactoring *** */
+
+/* ********* WR__ CODE *********** */
+/* */
+//       var todosHere = [
+//         ...state,
+//       ] // Hmm, guess my code gets away with no final semi-colon here
+//       return todosHere.map( (todoHere) => {
+//         if (todoHere.id === action.id) {
+//           var wasCompletedTF = todoHere.completed;
+//           // -- var flipWasCompletedTF = !wasCompletedTF;
+//           // -- todoHere.completed = !todoHere.completed; // <<< NO!
+//           // -- if (todoHere.completedAt) {
+//           // --   // Held some value (timestamp)
+//           // --   todoHere.completedAt = undefined; // clear it out // <<< NO!
+//           // -- } else {
+//           // --   todoHere.completedAt = moment().unix(); // <<< NO!
+//           // -- }
+//           return {
+//               ...todoHere,
+//               completed: !wasCompletedTF,
+//               completedAt: !wasCompletedTF ? moment().unix() : undefined ,
+// // -- NOPE:              completedAt: completed ? moment().unix() : undefined , // << ReferenceError: completed is not defined
+//
+// // -- WORKS:
+//               // -- completed: flipWasCompletedTF,
+//               // -- completedAt: flipWasCompletedTF ? moment().unix() : undefined ,
+//           };
+//         } else { // This was missing. Cause of error in test array > 1 element!
+//           return todoHere;
+//         }
+//
+//       });
 /* */
 /* ********* /WR__ CODE *********** */
 

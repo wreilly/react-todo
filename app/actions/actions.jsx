@@ -123,10 +123,50 @@ export var toggleShowCompleted = () => {
 
 // toggleTodo(id) - one param
 // TOGGLE_TODO
-
-export var toggleTodo = (id) => {
+/* *** FIREBASE Refactor *** */
+// We revise "toggle" to really be "update":
+// export var toggleTodo = (id) => {
+//   return {
+//     type: 'TOGGLE_TODO',
+//     id,
+//   };
+// };
+// This was toggleTodo, now revised to updateTodo:
+// SYNCHRONOUS ACTION.   (Called by the ASYNCHRONOUS Action: startToggleTodo)
+export var updateTodo = (id, updates) => {
   return {
-    type: 'TOGGLE_TODO',
+    type: 'UPDATE_TODO',
     id,
+    updates,
+  };
+};
+
+
+/* *** FIREBASE *** */
+// ASYNCHRONOUS ACTION.   (Calls the SYNCHRONOUS Action: updateTodo)
+// 2 params: ID of which Todo, and,
+//   are we going from T to F, or F to T ?
+export var startToggleTodo = (id, completed) => {
+  return (dispatch, getState) => {
+    // ES5 Plain ol'
+    // var todoRef = firebaseRef.child('todos/' + id);
+    // ES6 Template Strings:
+    // Insert JavaScript after $, inside {}
+    var todoRef = firebaseRef.child(`todos/${id}`);
+    var updates = {
+      completed: completed,
+      completedAt: completed ? moment().unix() : null
+    };
+
+    // then promise waits for the data to be changed on Firebase ...
+    // return the promise; allows us to chain on to 'then' inside of our tests - useful.
+    // Like we did up in startAddTodo.
+    // UPDATE DATA ON FIREBASE:
+    return todoRef.update(updates).then( () => {
+      // success handler
+      // we'll dispatch our synchronous (?) action here
+      // (START) THE UPDATE of DATA ON APP STORE (?)
+      dispatch(updateTodo(id, updates));
+    });
   };
 };
