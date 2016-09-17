@@ -1,3 +1,6 @@
+// NEW IDEA: // https://davidwalsh.name/object-keys
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys
+
 var lilInspector = function (yourObject, yourObjectVariableName_kids) {
     var lilKey; // we won't even initiate. what Type is a key, anyway? String? Hmm
     var lilObject = yourObject; // pros? cons? of doing this?

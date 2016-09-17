@@ -27,7 +27,39 @@ export var TodoList = React.createClass({
 
     var {todos, showCompleted, searchText} = this.props;
     var renderTodos = () => {
-      if (todos.length === 0 ) {
+
+      /* *** INSTRUCTOR CODE SOLUTION *** */
+      // LECTURE 137 10:20
+      var filteredTodos = TodoAPI.filterTodos(todos, showCompleted, searchText);
+
+      /* *** CRAZY WILLIAM CODE SOLUTION *** */
+      // NOT ELEGANT.
+      var allTodosCompleted = false; // default of nope. some are still goin'
+      var notCompletedTodos = []; // empty array to hold any not completed (if any!)
+
+      notCompletedTodos = todos.filter( (aTodo) => {
+        return !aTodo.completed; // If you're not completed, we wanna know about it
+      });
+
+      // If after all that, the empty array is STILL empty, well,
+      //    they are ALL completed!
+      if (notCompletedTodos.length === 0) {
+        allTodosCompleted = true;
+      }
+
+
+      /* *** INSTRUCTOR CODE SOLUTION *** */
+      // LECTURE 137 10:20
+      // That's all you need to do! Put the whole filter bit ABOVE.
+      // If the filteredTodos gets down to no entries, we put up the "no todos!" msg.
+      // (Even though there may *Be* entries, but they're Completed! - Get it?)
+      if ( filteredTodos.length === 0) {
+
+      /* *** CRAZY WILLIAM CODE SOLUTION *** */
+      // NOT ELEGANT.
+      // If ALL are completed, we now show you the "no todos for you" msg. :)
+      // One more bit: show "No todos, kid" msg. ONLY IF the overall "showCompleted" is set to FALSE. Thank you.
+      // if ( (todos.length === 0) || ( allTodosCompleted && !showCompleted ) ) {
         return (
           <p className="container__message">No wr__todos for you!</p>
         );
@@ -38,8 +70,10 @@ export var TodoList = React.createClass({
       // REDUX Refactor TodoSearch. Call the API and its filter,
       //   to get the application of those 2 props: showCompleted and searchText!
 
-
-      return TodoAPI.filterTodos(todos, showCompleted, searchText).map( (todo) => {
+      /* *** INSTRUCTOR CODE SOLUTION *** */
+      // LECTURE 137 10:20 ...
+      // return TodoAPI.filterTodos(todos, showCompleted, searchText).map( (todo) => {
+      return filteredTodos.map( (todo) => {
         return (
           // 1) Need unique key prop (for React)
           // 2) ... spread operator 9:22 Lecture 86

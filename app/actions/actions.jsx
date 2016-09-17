@@ -102,6 +102,12 @@ export var startAddTodo = (text) => {
 
 // *** LOCALSTORAGE Redux Refactoring, going to LocalStorage
 // Called in app.jsx
+/* *** FIREBASE Refactoring LECTURE 136 *** */
+// No more going to localStorage for todos.
+// Here is the SYNCHRONOUS ACTION addTodos.
+//  Called from
+//   the ASYNCHRONOUS Action, startAddTodos, which
+//   in turn is called from app.jsx.
 export var addTodos = (todos) => {
   return {
     type: 'ADD_TODOS',
@@ -109,6 +115,150 @@ export var addTodos = (todos) => {
     todos, // final comma should be okay
   };
 };
+
+/* *** FIREBASE Refactoring LECTURE 136 *** */
+// ASYNCHRONOUS ACTION
+// Invoked in app.jsx, dispatched to go
+//  get the todos out of Firebase, to start the app.
+export var startAddTodos = () => {
+// ACTION *FUNCTION* THAT GETS CALLED By Redux
+//    WITH DISPATCH and GETSTATE:
+// LECTURE 136  6:15
+  return (dispatch, getState) => {
+    var todosFromFirebaseObj = {}; // comes back as Object
+    // https://firebase.google.com/docs/database/web/retrieve-data
+
+    // ONCE returns a Promise we call with data snapshot
+    // RETURN CHAINS the promise, so can be used in test
+    return firebase.database().ref().child('todos').once('value').then( (snapshot) => {
+
+console.log("WR__ 666 snapshot.val(): ", snapshot.val()); //
+
+        // Instructor addition: defensive coding!
+        // What if NO todos? Then set it to
+        //   empty object {} (don't leave it to go 'undefined'):
+        todosFromFirebaseObj = snapshot.val() || {};
+// }); // /END of Firebase Retrieval and "THEN" promise....
+
+console.log("WR__ 777 todosFromFirebaseObj: ", todosFromFirebaseObj); // {}
+
+
+      // Given an Object, returns an ARRAY (of, the Keys!)
+      var firebaseTodosKeys = Object.keys(todosFromFirebaseObj);
+
+console.log("WR__ 888 firebaseTodosKeys (array): ", firebaseTodosKeys);
+
+      var todosForAppArray = []; // 'parsedTodos'
+      // forEach callback per item:
+      firebaseTodosKeys.forEach( (thatKey) => {
+        todosForAppArray.push({
+          id: thatKey,
+          // text, completed, completedAt, createdAt
+          ...todosFromFirebaseObj[thatKey]
+        });
+      });
+
+console.log("WR__ 999 todosForAppArray[0].id (array): ", todosForAppArray[0].id);
+
+      // update the Redux store, will re-render in components
+      dispatch(addTodos(todosForAppArray));
+
+    }); // /END of Firebase Retrieval and "THEN" promise....
+
+  };
+};
+
+
+// Quirk: Firebase returns object. App expects array.
+//////////////////////////////
+// Firebase returns:
+// {
+//   'kajflaflafkaf' : {
+//     text: 'walk dog',
+//   },
+//   '12345' : {
+//     text: 'walk cat',
+//   },
+// }
+
+// ReactTodo App expects:
+// [
+//   {
+//     id: 'kajflaflakaf',
+//     text: 'walk dog',
+//   },
+//   {
+//     id: '12345',
+//     text: 'walk cat',
+//   },
+// ]
+// HOW TO FIX: Object.keys
+// https://davidwalsh.name/object-keys
+/*
+var person = {
+  firstName: 'David',
+  lastName: 'Walsh',
+  // ...
+};
+
+"trait" is a key, children.
+
+Object.keys(person).forEach(function(trait) {
+  console.log('Person ', trait,': ', person[trait]);
+});
+
+Person firstName: David
+Person lastName: Walsh
+*/
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys
+
+/* Hmm, so use of Object.keys takes Object, returns Array, yah?
+INPUT:
+{
+  'kajflaflafkaf' : {
+    text: 'walk dog',
+  },
+  '12345' : {
+    text: 'walk cat',
+  },
+}
+OUTPUT:  <<< WRONG
+[
+  'kajflaflafkaf' : {
+    text: 'walk dog',
+  },
+  '12345' : {
+    text: 'walk cat',
+  },
+]
+
+OUTPUT:  <<< RIGHT. It's *just* the keys. hokay.
+[ 'kajflaflafkaf', '12345' ]
+
+ERGO:
+
+CONSOLE:
+var person = {
+  firstName: 'David',
+  lastName: 'Walsh',
+  // ...
+};
+undefined
+person
+Object {firstName: "David", lastName: "Walsh"}
+var parray = Object.keys(person)
+undefined
+parray
+["firstName", "lastName"]
+person[parray[0]]   <<< Quite Groovy.
+"David"
+
+*/
+//////////////////////////////
+
+
+
+
 
 // toggleShowCompleted - no params
 // TOGGLE_SHOW_COMPLETED

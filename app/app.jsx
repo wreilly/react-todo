@@ -29,26 +29,44 @@ var TodoAPI = require('TodoAPI');
 /* **** import './../playground/firebase/index'; // ? *** */
 /* *** /FIREBASE Refactoring into the real Todo App *** */
 
-store.subscribe( () => {
-  var state = store.getState();
-  console.log("New state (using LocalStorage now): ", state);
 
-  // *** NOW LOCALSTORAGE Redux Refactoring, Store now going to LocalStorage ...
-  /* *****
-hah!
-- Used to be on React life-cycle componentDidUpdate, in TodoApp.jsx. todos went to app state.
-- Now instead here in the Redux store.subscribe() listener, todos going to localStorage.
-Cool.
-  */
-  TodoAPI.setTodos(state.todos);
-});
 
-// *** LOCALSTORAGE Redux Refactoring, going to LocalStorage
-// New: Need a way to load up any existing todo items.
-// Use our API to get them out of LocalStorage. (May or may not be any)
-var initialTodos = TodoAPI.getTodos();
+/* *** FIREBASE Refactoring LECTURE 136 *** */
+/* No More LOCALSTORAGE */
+
+// store.subscribe( () => {
+//   var state = store.getState();
+//   console.log("New state (using LocalStorage now): ", state);
+//
+//   // *** NOW LOCALSTORAGE Redux Refactoring, Store now going to LocalStorage ...
+//   /* *****
+// hah!
+// - Used to be on React life-cycle componentDidUpdate, in TodoApp.jsx. todos went to app state.
+// - Now instead here in the Redux store.subscribe() listener, todos going to localStorage.
+// Cool.
+//   */
+//   TodoAPI.setTodos(state.todos);
+// });
+//
+// // *** LOCALSTORAGE Redux Refactoring, going to LocalStorage
+// // New: Need a way to load up any existing todo items.
+// // Use our API to get them out of LocalStorage. (May or may not be any)
+// var initialTodos = TodoAPI.getTodos();
+/* *** /FIREBASE Refactoring LECTURE 136 *** */
+/* /No More LOCALSTORAGE */
+
+
+
 // New Action and Reducer,  for BULK ADD of Todo items to todos
-store.dispatch(actions.addTodos(initialTodos));
+/* *** FIREBASE Refactoring LECTURE 136 *** */
+// We *used to* refresh the app store with this action:
+// store.dispatch(actions.addTodos(initialTodos));
+// Now instead: Firebase Asynchronous Action to go GET the initial todos out of Firebase. No longer LocalStorage.
+// After the Asynchronous action (startAddTodos), we'll
+//   still call the Synchronous action (addTodos) to
+//   refresh the store, providing data to the app
+store.dispatch(actions.startAddTodos());
+/* *** /FIREBASE Refactoring LECTURE 136 *** */
 
 
 

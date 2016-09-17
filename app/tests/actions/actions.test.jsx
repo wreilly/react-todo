@@ -18,6 +18,7 @@ var createMockStore = configureMockStore([thunk]);
 
 
 describe('Actions', () => {
+
   it('should generate the search text action', () => {
     var action = {
       type: 'SET_SEARCH_TEXT',
@@ -29,7 +30,7 @@ describe('Actions', () => {
     expect(res).toEqual(action);
   });
 
-  it('should generate the add Todo action', () => {
+  it('should MERELY generate the add Todo action', () => {
 /* *** FIREBASE Refactoring **** */
 // Yep:
     var todo_handmade = {
@@ -56,7 +57,9 @@ describe('Actions', () => {
 // My NON-conventional name -
 // To pass this test I had to change from todoText to text (see actions.jsx):
 //    todoText: 'Gots to write more actions.',
-    };
+
+    }; // /action! oo-la. type: 'ADD_TODO'
+
   // Also changed todoText to text here, on the action:
   /* *** FIREBASE Refactoring **** */
   // Now whole action, not just action.text
@@ -67,14 +70,14 @@ describe('Actions', () => {
   // Hmm. Interesting (above) the spread operator on this action object. We got:
   /*  { todo: undefined, type: 'ADD_TODO' }
   */
-  var res = actions.addTodo(action.todo); // New. Hope so! YEAH. Worked! :o)
-  expect(res).toEqual(action);
+    var res = actions.addTodo(action.todo); // New. Hope so! YEAH. Worked! :o)
+    expect(res).toEqual(action);
   });
 
 
 // ASYNCH TEST
 // Tell Mocha keep listening till done is called
-  it('should create todo and dispatch ADD_TODO', (done) => {
+  it('should run startAddTodo (singular), to create todo and dispatch ADD_TODO (singular)', (done) => {
     // call with empty store {}
     const store = createMockStore({});
     const todoText = 'My aysnch todo item, from actions.test.jsx';
@@ -97,6 +100,7 @@ describe('Actions', () => {
 
 
 // *** LOCALSTORAGE Redux Refactoring, going to LocalStorage
+// SYNCHRONOUS:
   it('should MERELY generate the add Todos (plural) action object', () => {
     var todos: [
       {
@@ -122,6 +126,89 @@ describe('Actions', () => {
   });
 
 
+  // ********* 2nd Level DESCRIBE 01  PLURAL *********
+  describe('ASYNCH Tests with Firebase, getting all Todos - initial state', () => {
+// WR__ we'll see...
+    var aRefToTodos; // ?
+
+    // MOCHA (again) :)
+    beforeEach( (done) => {
+
+// WR__ we'll see...
+      aRefToTodos = firebase.database().ref().child('todos'); // ?
+
+      var todosRef = firebaseRef.child('todos');
+
+      // CLEAN OUT PRE-EXISTING CONDITIONS ;o)
+      todosRef.remove().then( () => {
+        // success handler for (1st) promise
+
+        // NOW READY TO LOAD DB "BEFORE" EACH TEST:
+
+// WR__ we'll see...        aRefToTodos.set([
+
+        // CHAIN by Returning, to the promise ...
+        return todosRef.set([
+            {
+              text: 'Firebase TODOS 01 actions test',
+              completed: false,
+              createdAt: 234567,
+            },{
+              text: 'Firebase TODOS 02 actions test',
+              completed: false,
+              createdAt: 234500,
+            }
+        ])
+        // then moves on to the actual test case code...
+      })
+      .then( () => done() ) // success handler for (2nd) promise
+      .catch(done);
+
+
+    });
+
+    afterEach( (done) => {
+      aRefToTodos.remove().then( () => done() );
+    });
+
+    // ASYNCHRONOUS
+    it('should run startAddTodos (plural), to get todos from Firebase, and dispatch ADD_TODOS (plural) ', (done) => {
+      const store = createMockStore({});
+
+      // From the instructor code/video:
+      const action = actions.startAddTodos();
+
+      // store.dispatch(actions.startAddTodos()).then( () => {
+      // Instructor improvement:
+      store.dispatch(action).then( () => {
+          // success handler
+          // returns all the actions since store created:
+          const actionsFired = store.getActions();
+
+          expect(actionsFired[0]).toInclude({
+            type: 'ADD_TODOS',
+          });
+          // same thing:
+          expect(actionsFired[0].type).toEqual('ADD_TODOS');
+
+          // or .toEqual
+          expect(actionsFired[0].todos.length).toBe(2);
+
+          expect(actionsFired[0].todos[0].text).toEqual('Firebase TODOS 01 actions test');
+
+          expect(actionsFired[0].todos[0].text).toInclude('01');
+
+          done(); // Non dimenticare!
+          // will go back to afterEach() ... :)
+
+      }).catch(done); // error handler...
+    });
+
+  }); // /describe ASYNCH stuff...
+
+
+
+
 
   it('should generate the toggleShowCompleted action', () => {
     var action = {
@@ -132,6 +219,8 @@ describe('Actions', () => {
     var res = actions.toggleShowCompleted();
     expect(res).toEqual(action);
   });
+
+
 
 /* *** FIREBASE Refactoring *** */
   // it('should generate the toggle todo action (completed, or not)', () => {
@@ -152,8 +241,10 @@ describe('Actions', () => {
     expect(res).toEqual(action);
   });
 
-/* *** FIREBASE Refactoring *** */
-// Lecture 135 7:30
+
+  // ********* 2nd Level DESCRIBE 02 SINGULRAR *********
+  /* *** FIREBASE Refactoring *** */
+  // Lecture 135 7:30   SINGULAR UPDATE ONE TODO
   describe('Tests with Firebase todos', () => {
     var testTodoRef;
 
@@ -179,7 +270,7 @@ describe('Actions', () => {
       testTodoRef.remove().then( () => done() );
     });
 
-    it('should toggle todo and dispatch UPDATE_TODO action', (done) => {
+    it('should toggle todo (run startToggleTodo) and dispatch UPDATE_TODO action', (done) => {
       // Optional: Pass in data for your store.
       const store = createMockStore({});
       // The ID is the key from Firebase:
@@ -191,7 +282,7 @@ describe('Actions', () => {
       Okay: the then promise gets 2 functions passed to it: 1st is the success; 2nd is the fail. We just pass in done; if/when it fails any error messages get passed back via done to then.
       */
       store.dispatch(action).then(
-        // 1st:
+        // 1st function passed in to promise:
         () => {
           // returns array of all actions that were fired...
           const mockActions = store.getActions();
@@ -228,8 +319,8 @@ var unixTimeWhenIWroteTest = 1474046932;
         //
          done(); // Don't forgte to call done()!
         //
-      }, // /1st
-        // 2nd:
+      }, // /1st function passed in to promise
+        // 2nd function passed in to promise:
         done); // just 'done' not 'done()' We're not firing it, but passing it
 
     });
