@@ -60,8 +60,14 @@ True enough: "unreachable code"
     //     oppositeCompletedState = true;
     //   }
     //   return  oppositeCompletedState; // reverse the Boolean
-    // default:
-    //   return state;
+    
+// Interesting. I'd commented out this default: case.
+// Got this error msg:
+/*
+VM71884:1 Uncaught Error: Reducer "showCompleted" returned undefined during initialization. If the state passed to the reducer is undefined, you must explicitly return the initial state. The initial state may not be undefined.
+*/
+    default:
+      return state;
   }
 };
 

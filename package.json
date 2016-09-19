@@ -1,7 +1,7 @@
 {
-  "name": "boilerplate3",
+  "name": "todoappboilerplate3",
   "version": "1.0.0",
-  "description": "Final Boilerplate, Udemy React Course 2016",
+  "description": "Todo App, Udemy React Course 2016",
   "main": "index.js",
   "scripts": {
     "test": "NODE_ENV=test karma start",
