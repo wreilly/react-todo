@@ -6,13 +6,14 @@ var ReactDOM = require('react-dom');
 var {Provider} = require('react-redux');
 var {Route, Router, IndexRoute, hashHistory} = require('react-router');
 
+// *** LOCALSTORAGE Redux Refactoring, going to LocalStorage
+var TodoAPI = require('TodoAPI');
+
+
 var TodoApp = require('TodoApp');
 
 var actions = require('actions');
 var store = require('configureStore').configure();
-
-// *** LOCALSTORAGE Redux Refactoring, going to LocalStorage
-var TodoAPI = require('TodoAPI');
 
 // FIREBASE
 // Hmm, different use of import. No 'from'. Lecture 126 8:35
