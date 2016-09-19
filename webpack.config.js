@@ -4,7 +4,7 @@ var path = require('path');
 // available in Node
 // 'production' in prod up on Heroku
 // Will be nothing, on local ...
-process.env.NODE_ENV = process.env.NODE_ENV || 'development'
+process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 module.exports = {
 // script! invokes "script loader", for webpack purposes
@@ -30,6 +30,12 @@ module.exports = {
        warnings: false,
      },
    }),
+// FROM react-11-14 (we are in react-11-13)
+   new webpack.DefinePlugin({
+      'process.env': {
+        NODE_ENV: JSON.stringify(process.env.NODE_ENV),
+      },
+    }),
  ],
   output : {
     path : __dirname, // current directory (root)

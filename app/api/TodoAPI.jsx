@@ -1,4 +1,9 @@
-var $ = require('jquery');
+// https://www.udemy.com/the-complete-react-web-app-developer-course/learn/v4/questions/1441482
+// HMM. Going to HEROKU (Lecture 138), hit error,
+// solution (for someone else, at least) included
+// commenting out this no longer needed jQuery:
+// (Was used in handlers, way back when...)
+// var $ = require('jquery');
 
 
 module.exports = {
