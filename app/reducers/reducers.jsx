@@ -41,16 +41,27 @@ export var showCompletedReducer = (state = false, action) => {
   switch (action.type) {
     case 'TOGGLE_SHOW_COMPLETED':
       return !state; // All you need.
+
+/* webpack -p
+Uglify.js:
+Dropping unreachable code [./app/reducers/reducers.jsx:45,6]
+Declarations in unreachable code! [./app/reducers/reducers.jsx:45,6]
+Hah!
+I'd left in this code *below* my 'return' just above.
+True enough: "unreachable code"
+*/
+
+
 // I was missing something - namely that the false came in on state=
-      var oppositeCompletedState = true; // just make this thing a boolean
-      if (action.completed) { // if it's true make it false
-        oppositeCompletedState = false;
-      } else { // vice versa
-        oppositeCompletedState = true;
-      }
-      return  oppositeCompletedState; // reverse the Boolean
-    default:
-      return state;
+    //   var oppositeCompletedState = true; // just make this thing a boolean
+    //   if (action.completed) { // if it's true make it false
+    //     oppositeCompletedState = false;
+    //   } else { // vice versa
+    //     oppositeCompletedState = true;
+    //   }
+    //   return  oppositeCompletedState; // reverse the Boolean
+    // default:
+    //   return state;
   }
 };
 

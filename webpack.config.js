@@ -1,6 +1,11 @@
 var webpack = require('webpack');
 var path = require('path');
 
+// available in Node
+// 'production' in prod up on Heroku
+// Will be nothing, on local ...
+process.env.NODE_ENV = process.env.NODE_ENV || 'development'
+
 module.exports = {
 // script! invokes "script loader", for webpack purposes
   entry : [
@@ -18,8 +23,13 @@ module.exports = {
  plugins: [
    new webpack.ProvidePlugin({
      '$': 'jquery',
-     'jQuery' : 'jquery'
-   })
+     'jQuery' : 'jquery',
+   }),
+   new webpack.optimize.UglifyJsPlugin({
+     compressor : {
+       warnings: false,
+     },
+   }),
  ],
   output : {
     path : __dirname, // current directory (root)
@@ -68,8 +78,11 @@ module.exports = {
     ]
   },
   /*
+  SOURCEMAPS
+  Generate for dev/local only, not in production
+  (they're huge!)
 https://www.udemy.com/the-complete-react-web-app-developer-course/learn/v4/t/lecture/5647320
 ... "inline-source-map" or "eval-source-map" instead.
   */
-  devtool : 'cheap-module-eval-source-map'
+  devtool : process.env.NODE_ENV === 'production' ? undefined : 'cheap-module-eval-source-map',
 };
