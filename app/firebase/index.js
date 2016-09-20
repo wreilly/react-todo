@@ -3,21 +3,40 @@
 // *******************************************
 import firebase from 'firebase';
 
-// try / catch ensures this is tried once, dealt without
+// try / catch ensures this is tried once, dealt with
 //     appropriately (as opposed to tried many times...)
 try {
   // Initialize Firebase
-  var config = {
-    apiKey: "AIzaSyCKydFPqxgfDALKnBF8eFxzXsYa2eMSaj0",
-    authDomain: "lightning-todo-app.firebaseapp.com",
-    databaseURL: "https://lightning-todo-app.firebaseio.com",
-    storageBucket: "lightning-todo-app.appspot.com",
-  };
+  // OLD, ORIGINAL, **NOW DELETED** FIREBASE PROJECT:
+  // var config = {
+  //   apiKey: "AIzaSyCKydFPqxgfDALKnBF8eFxzXsYa2eMSaj0",
+  //   authDomain: "lightning-todo-app.firebaseapp.com",
+  //   databaseURL: "https://lightning-todo-app.firebaseio.com",
+  //   storageBucket: "lightning-todo-app.appspot.com",
+  // };
 
+// NEW: TODO APP - name of database on Firebase
+//      TODO APP TEST - other db on Fb
+// messagingSenderId is new on Firebase, not used in our app
+  var config = {
+    apiKey: process.env.API_KEY,
+    authDomain: process.env.AUTH_DOMAIN,
+    databaseURL: process.env.DATABASE_URL,
+    storageBucket: process.env.STORAGE_BUCKET,
+    messagingSenderId: process.env.MESSAGING_SENDER_ID,
+  };
   firebase.initializeApp(config);
 
 } catch (err) {
-
+  // IGNORE, EH?
+  // HOW ABOUT WE HELP OURSELVES OUT, A LITTLE
+  // AND F'IN CONSOLE.LOG THE FACT THERE WAS A
+  // FREEKIN' ERR-OR HE-RE.
+  // JEEZABUS.
+  /*
+  console.log("WR__ 12345 wtf /app/firebase/index.js initializeApp(config to DELETED lightning-todo-app) has a little ERROR to tell us about! ", err);
+  */
+  // FUT THE WUK. The above NEVER COMES OUT. oof.
 }
 
 

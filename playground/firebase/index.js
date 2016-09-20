@@ -3,12 +3,49 @@ import firebase from 'firebase';
 import lilInspector from 'lilInspector';
 
 // Initialize Firebase
+// OLD, ORIGINAL, **NOW DELETED** FIREBASE PROJECT:
+  // var config = {
+  //   apiKey: "AIzaSyCKydFPqxgfDALKnBF8eFxzXsYa2eMSaj0",
+  //   authDomain: "lightning-todo-app.firebaseapp.com",
+  //   databaseURL: "https://lightning-todo-app.firebaseio.com",
+  //   storageBucket: "lightning-todo-app.appspot.com",
+  // };
+
+/* YOU IDIOT. When the Frickin' Code Differs, it Differs
+              for a frickin' reason. Go Find It Out, you chuff.
+              I was editing the @#$%^& "PLAYGROUND" version of the file. Oy!
+*/
+/* VIDEO LECTURE CODE DIFFERS A LITTLE
+LECTURE 139 7:30
+fwiw,
+TWO THINGS in Video Code, not in Course Github Code. Hmm.
+
+1. TRY CATCH (pretty benign)
+Has a try { } catch (e) { } :
+ try {
+  var config { ... };
+  initializeApp(config);
+} catch (e) {
+   // (empty)
+}
+
+2. EXPORTS  (hmm, seems odd this would differ?)
+export var firebaseRef = firebase.database().ref();
+export default firebase;
+*/
+
+// NEW: TODO APP
+// messagingSenderId is new on Firebase, not used in our app
   var config = {
-    apiKey: "AIzaSyCKydFPqxgfDALKnBF8eFxzXsYa2eMSaj0",
-    authDomain: "lightning-todo-app.firebaseapp.com",
-    databaseURL: "https://lightning-todo-app.firebaseio.com",
-    storageBucket: "lightning-todo-app.appspot.com",
+    apiKey: process.env.API_KEY,
+    authDomain: process.env.AUTH_DOMAIN,
+    databaseURL: process.env.DATABASE_URL,
+    storageBucket: process.env.STORAGE_BUCKET,
+    messagingSenderId: process.env.MESSAGING_SENDER_ID,
   };
+
+
+
   firebase.initializeApp(config);
 
 // Database object, references - e.g.
