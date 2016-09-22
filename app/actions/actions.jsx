@@ -9,7 +9,11 @@ import moment from 'moment';
 // Why?
 // firebase gets that default export
 // {firebaseRef} (I guess) processes a JSX expression (?) to find that var, available among the exported modules. (I guess?) okay.
-import firebase, {firebaseRef} from 'app/firebase/';
+
+
+/* *** OAUTH GITHUB LOGIN LOGOUT **** */
+// import firebase, {firebaseRef} from 'app/firebase/';
+import firebase, {firebaseRef, githubProvider} from 'app/firebase/';
 
 
 
@@ -320,3 +324,36 @@ export var startToggleTodo = (id, completed) => {
     });
   };
 };
+
+/* *** OAUTH GITHUB LOGIN LOGOUT **** */
+
+  export var startLogin = () => {
+    return (dispatch, getState) => {
+      // firebase.auth() returns many functions; we use as below:
+      // 'return' keeps the chain going
+      // For example of 'result', see
+      /*
+I just copied and pasted this big honkin' Object out of the Console (partially expanded, not entirely):
+
+/Users/william.reilly/dev/JavaScript/React/Udemy-REACT-Complete-Developer-Course/11Firebase/...
+...react-11-17-CONSOLELOG-Example-OAuthSuccessObject.js
+      */
+      return firebase.auth().signInWithPopup(githubProvider).then( (result)  => {
+          // success
+          console.log('Auth worked!', result);
+        }, (error) => {
+          // error
+          console.log('Solly! Unable to auth', error);
+        });
+    };
+  };
+
+  export var startLogout = () => {
+    return (dispatch, getState) => {
+      return firebase.auth().signOut().then( () => {
+        console.log("Logged out!");
+      });
+    };
+  };
+
+/* *** /OAUTH GITHUB LOGIN LOGOUT **** */

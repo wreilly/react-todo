@@ -6,12 +6,32 @@ var TestUtils = require('react-addons-test-utils');
 var $ = require('jquery');
 
 var configureStore = require('configureStore');
-var TodoApp = require('TodoApp');
+
+
+/* 14:20 :Lecture 142
+Here, we shift from ES5 Require to ES6 Import.
+We use ES6 destructuring to get the PLAIN OLD unConnected component, the regular 'var export' one:
+*/
+// OLD ES5:
+// var TodoApp = require('TodoApp');
+// NEW ES6:
+import {TodoApp} from 'TodoApp';
+
+
 
 // OLD ES5
 // var TodoList = require('TodoList');
 // NEW ES6 import for export
 // As on TodoApp.jsx, this is just the plain regular TodoList component, not the ConnectedTodoList component. Cheers.
+/* UPDATE*
+Hey! See above re: ES6 ddestructuring to get the Plain Old UnConnected component.
+I think my comment above is wrong.
+The line of code below (which matches the Instructor code) is NOT getting the Plain Old UnConnected TodoList component.
+It is getting the Connected TodoList component.
+O.K. - I guess here in the TEST file for the TodoApp component, the import for THAT component specifically NEEDS to be the UnConnected one.
+While the import of OTHER - RELATED Components herein (E.g. TodoList) does NOT need to be (kn fact should NOT be) the UnConnected one. It shold be the Connected one! Bon.
+My Best Understanding.
+*/
 import TodoList from 'TodoList';
 
 describe('TodoApp', () => {

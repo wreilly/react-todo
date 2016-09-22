@@ -1,5 +1,7 @@
 // Note: .js, not .jsx
 
+
+
 // *******************************************
 import firebase from 'firebase';
 
@@ -38,6 +40,10 @@ try {
   */
   // FUT THE WUK. The above NEVER COMES OUT. oof.
 }
+
+
+/* *** OAUTH GITHUB **** */
+export var githubProvider = new firebase.auth.GithubAuthProvider();
 
 
 // Get (and export) reference to database

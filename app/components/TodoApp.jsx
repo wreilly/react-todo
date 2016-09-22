@@ -1,6 +1,23 @@
-var React = require('react');
-var uuid = require('node-uuid');
-var moment = require('moment');
+// OLD:
+// var React = require('react');
+// NEW, GWOOVY:
+import React from 'react';
+
+
+/* *** OAUTH GITHUB LOGIN LOGOUT **** */
+// (As in Login.jsx, Now we need Redux, to get 'dispatch', which we need for actions, which we now need to wire up this Login component, to do actions like Log In, Log Out!
+import * as Redux from 'react-redux';
+import * as actions from 'actions';
+
+/* Hey! These 2 are no longer in  use here! The unique ID is now Firebase-generated, and the date-timestamp also from Firebase I do believe.
+Nope: We still use moment in the ACTIONS.JSX file now:
+- in the Asynch startAddTodo = createdAt
+- in the Asynch startToggleTodo = completedAt
+momet is also in the Todo.jsx component, in its renderDate() method.
+
+*/
+// var uuid = require('node-uuid');
+// var moment = require('moment');
 
 // OLD ES5:
 // var TodoList = require('TodoList');
@@ -27,7 +44,31 @@ import TodoSearch from 'TodoSearch';
 // var TodoAPI = require('TodoAPI');
 
 // After REDUX bit, all that's left is RENDER function, way down below:
-var TodoApp = React.createClass({
+
+/* 13:40 :Lecture 142
+In addition to the connected export (bottom of file), here we do EXPORT to make the plain old unconnected component available, to be used in TESTING.
+*/
+export var TodoApp = React.createClass({
+
+
+  /* *** OAUTH GITHUB LOGIN LOGOUT **** */
+  // WRONG-O !!! !!!!
+  // var onLogout = () => {
+  //   var {dispatch} from this.props;
+  //
+  //   dispatch(actions.startLogout());
+  // };
+
+  // RIGHT: (see Login.jsx. oy.)
+  /* ES6 Object Method Syntax: */
+  onLogout(event) {
+    var {dispatch} = this.props;
+    // Prevent page from completely refreshing, "since we're dealing with an anchor tag here"
+    event.preventDefault();
+
+    dispatch(actions.startLogout());
+  },
+
 
 /* ****** REACT-REDUX Refactoring ********* */
 /* Now, the app no longer handles state;
@@ -167,8 +208,10 @@ Twasn't truly necessary.
 
 
 
-
-  render: function () {
+  // OLD:
+  // render: function () {
+  // NEW, GROOVY:
+  render () {
 
 /* ********* REACT-REDUX Refactoring ******* */
     // Going to the Store, ma! No need for the API, here.
@@ -184,6 +227,10 @@ Twasn't truly necessary.
 
     return (
       <div>
+{/* *** OAUTH GITHUB LOGIN LOGOUT **** */}
+        <div className="page-actions">
+          <a href="#" onClick={this.onLogout}>Logout!</a>
+        </div>
         <h1 className="page-title">Todo Redux App (TodoApp.jsx)</h1>
         <div className="row">
           <div className="column small-centered small-11 medium-6 large-5">
@@ -201,8 +248,20 @@ Twasn't truly necessary.
           </div>
         </div>
       </div>
-    )
-  }
+    );
+  },
 });
 
-module.exports = TodoApp;
+
+/* *** OAUTH GITHUB LOGIN LOGOUT **** */
+/*Connect, connects the component to the Redux Store.
+If you don't do that, the component is not getting any State information. Hah.
+*/
+/* 13:20 Lecture 142
+"We call Redux connect. We do not have to pass any function, to convert the Redux state, to props.
+All we have to do is pass in TodoApp, to connect it.
+*/
+export default Redux.connect()(TodoApp);
+
+// OLD:
+// module.exports = TodoApp;
