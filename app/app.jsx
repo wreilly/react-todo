@@ -1,15 +1,23 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
 // Provider - provide Store to children (Grandchildren too I think)
-// We only use Redux *Provider* here at the top of the app, for providing access to state (store)
-// Further below (TodoList, Todo) we use Redux *connector* for access to state (store)
+// The only place we use Redux *Provider* is here at the top of the app, for providing access to state (store)
+// Further below, conceptually, in the app (e.g. TodoList, Todo) we use Redux *connector* for access to that state (store)
 var {Provider} = require('react-redux');
-var {Route, Router, IndexRoute, hashHistory} = require('react-router');
+
+/* *** LECTURE 143 PRIVATE PAGES *** */
+// Let's clean up some imports.
+// With new /app/router/index.jsx, we no longer use Router things here in /app.jsx, except hashHistory:
+// var {Route, Router, IndexRoute, hashHistory} = require('react-router');
+var {hashHistory} = require('react-router');
 
 /* *** LOGIN REFACTORING *** */
 // Cwazy William, invented a whole 'Main' container, wasn't *really* necessary.
 // Got the idea of course from what was it the ReactTimer app ? Cheers.
-var Main = require('Main');
+/* *** LECTURE 143 PRIVATE PAGES *** */
+// Let's clean up some imports.
+// Now over in new /app/router/index.jsx:
+// var Main = require('Main');
 
 /* *** OAUTH GITHUB LOGIN LOGOUT **** */
 // Worked, but....
@@ -19,20 +27,51 @@ var Main = require('Main');
 /* Also note: this is getting the "connected" "default" Login, not the one used only in testing (which I believe is invoked with {Login}) */
 /* Perhaps minor note: When we put this line in, late in the game, we were already doing this 'ES6'/Import/Export manner of writing lines, so this one was already "future-proofed," ready to go, with the newly adjusted 'export' over in Login.jsx, to do the connect thing. Bon.
 */
-import Login from 'Login';
+/* *** LECTURE 143 PRIVATE PAGES *** */
+// Let's clean up some imports. Login now in router code
+// import Login from 'Login';
 
 /* *** OAUTH GITHUB LOGIN LOGOUT **** */
 /* Perhaps minor note: This line, put in long ago during the dark days of OLD 'ES5'/REQUIRE etc., now must be UPDATED to ES6/Import, to work with the just now updated ES6/EXPORT connected on the TodoApp.jsx. There you go.
 */
 // var TodoApp = require('TodoApp');
 // NEW & GROOVY
-import TodoApp from 'TodoApp';
+/* *** LECTURE 143 PRIVATE PAGES *** */
+// Let's clean up some imports. TodoApp now in router code
+// import TodoApp from 'TodoApp';
 
 var actions = require('actions');
 var store = require('configureStore').configure();
 
 // *** LOCALSTORAGE Redux Refactoring, going to LocalStorage
-var TodoAPI = require('TodoAPI');
+/* *** LECTURE 143 PRIVATE PAGES *** */
+// Let's clean up some imports. TodoAPI since quite awhile now is largely replaced by Firebase.
+// TodoAPI now only has utility function to FILTER and SORT the todos
+// var TodoAPI = require('TodoAPI');
+
+/* *** LECTURE 143 PRIVATE PAGES **** */
+// Using the webpack.config.js alias: { app: 'app'} to find /app/firebase/index.js :
+import firebase from 'app/firebase/';
+
+/* *** LECTURE 143 PRIVATE PAGES **** */
+// Contains <Router> code; put this var now inside JSX below ... {router}
+import router from 'app/router/';
+
+
+
+/* auth() returns an object with many functions.
+We want this "auth state change" listener.
+Takes a function. If user present: logged in.
+If missing: logged out
+*/
+firebase.auth().onAuthStateChanged( (user) => {
+  if (user) {
+    // swap out the URL with something new
+    hashHistory.push('/todos');
+  } else {
+    hashHistory.push('/');
+  }
+});
 
 // FIREBASE
 // Hmm, different use of import. No 'from'. Lecture 126 8:35
@@ -127,17 +166,32 @@ require('style!css!sass!applicationStyles');
 
 // HASHHISTORY on BROWSER (not server)
 
+
+/* *** LECTURE 143 PRIVATE PAGES *** */
+// React MIDDLEWARE Router methods
+// Now put into /app/router/index.js. Cheers.
+
 /* WR__ CODE: */
 ReactDOM.render(
   <div>
     <p>React Redux TodoApp - (app.jsx)</p>
     <Provider store={store}>
-      <Router history={hashHistory}>
-        <Route path='/' component={Main} >
-          <IndexRoute component={Login} />
-          <Route path='todos' component={TodoApp} />
-        </Route>
-      </Router>
+
+      {/* *** LECTURE 143 PRIVATE PAGES *** */}
+      {router}
+
+      {/*  Now, just invoke the imported router! (Above)
+
+      // below is Now over in /app/router/index.js:
+
+      // <Router history={hashHistory}>
+      //   <Route path='/' component={Main} >
+      //     <Route path='todos' component={TodoApp} onEnter={requireLogin}/>
+      //     <IndexRoute component={Login} onEnter={redirectIfLoggedIn}/>
+      //   </Route>
+      // </Router>
+      */}
+
     </Provider>
   </div>,
   document.getElementById('app')
