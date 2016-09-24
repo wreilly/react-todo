@@ -64,12 +64,41 @@ We want this "auth state change" listener.
 Takes a function. If user present: logged in.
 If missing: logged out
 */
+/* As noted in actions.jsx, I don't really understand how result.user is made available here, but, have to take it that, well, it is. Firebase Auth() magic etc.
+*/
+/* Hmm. https://firebase.google.com/docs/reference/js/firebase.auth.Auth#onAuthStateChanged
+Okay, guess I read here that this method (onAuthStateChanged) takes a function. That function can expect that something (Firebase magic?) is going to pass to it a firebase.USER. All right. Go to town.
+*/
 firebase.auth().onAuthStateChanged( (user) => {
   if (user) {
+    /* *** LECTURE 144 Action, Reducer. Pass user ID */
+    /* Here in the listener/observer, which was actuated/called by the ASYNCHRONOUS action "startLogin" (or "startLogout"), we now call/dispatch the SYNCHRONOUS action, to do/trigger the 'login' action (which, basically, in turn runs/calls the 'login' reducer.)
+    */
+
+    /* *UPDATE* Hmm, am I wrong? Instructor code has dispatch first.
+    */ /* DOUBLE UPDATE. Well, I am finding I DO need to put the redirect BEFORE the dispatch.
+    What the hell.
+    */ /* TREBLE UPDATE (hopefully last!)
+    Sheeshsush Cristobal.
+    I had left off 'store.' in 'store.dispatch(...)'
+    o-la!
+    So - I expect the perfesser code of putting the redirect AFTER the dispatch (er, ah, store.dispatch) is correct-a-mundo in the end.
+    oy!
+    LAST WORD: Tried both. Seems to NOT MATTER whether redirect is before or after dispatch. Good.
+    */
+    /* Hah. Found out you need to do this *before* you dispatch the action. It ain't comin' back after that, 'pparently. H-okay.
+    */
+
     // swap out the URL with something new
     hashHistory.push('/todos');
+    console.log("WR__ APP.JSX IF USER user.uid :) ", user.uid);
+    // D'oh!  dispatch(actions.login(user.uid));
+    store.dispatch(actions.login(user.uid));
   } else {
     hashHistory.push('/');
+    console.log("WR__ APP.JSX IF NO USER user.uid :) ");
+    // D'oh!  dispatch(actions.logout());
+    store.dispatch(actions.logout());
   }
 });
 

@@ -16,16 +16,19 @@ import thunk from 'redux-thunk';
 // var { searchTextReducer, showCompletedReducer, todosReducer} = require('reducers');
 
 // NEW 'import' way:
-import { searchTextReducer, showCompletedReducer, todosReducer} from 'reducers';
+import { authReducer, searchTextReducer, showCompletedReducer, todosReducer} from 'reducers';
 
 
 // New: pass in initialState; if none, set to empty object
 export var configure = (initialState = {}) => {
   /* http://redux.js.org/docs/api/combineReducers.html
+  The shape of the state object matches the keys of the passed reducers.
+
 A popular convention is to name reducers after the state slices they manage, so you can use ES6 property shorthand notation: combineReducers({ counter, todos }). This is equivalent to writing combineReducers({ counter: counter, todos: todos }).
 */
   var reducer = redux.combineReducers({
     // KEY "state slice" e.g. text, Boolean, array ...
+    auth: authReducer,
     searchText: searchTextReducer,
     showCompleted: showCompletedReducer,
     todos: todosReducer,

@@ -2,6 +2,84 @@ var uuid = require('node-uuid');
 var moment = require('moment');
 
 // ------------------------------
+// AUTH - Login, Logout
+// "Slice" of state is?
+// a. - result Object from firebase.auth() ?
+// b. - user sub-Object off of result ??
+// c. - user.uid String ???
+
+// No idea: Should the slice of state here get a default? e.g. {} ?? Boh!
+// export var authReducer = (state, action) => { // does work ...
+// 6:47 Yes! state = {}
+export var authReducer = (state = {}, action) => { // does work ...
+  switch (action.type) {
+    case 'LOGIN':
+    // What am I returning, exactly? a.? b.? c.? (above)
+      // WR__ CODE!
+      // return {
+      //   ...state,
+      //   auth: {
+      //     uid: action.uid,
+      //   },
+      // };
+      // INSTRUCTOR CODE prior to 8:07
+      //  Hmm, different approach from mine...
+
+/*
+O.K., I guess I (finally) understand this. (I think.)
+In configureStore.jsx, the 'redux.combineReducers' consumes an object, and one key:value pair is that 'auth:' gets what is returned by this 'authReducer'.
+So, as such, we already have the left-hand 'auth:' we need, now here in the reducer we just want to generate what needs to be returned back to go inside of that.
+We want:
+auth: {
+  uid: 1234
+}
+We've got:
+auth: {
+
+}
+So we only need to send:
+  uid: 1234
+
+Whereas I, in my WR__ Code above, thought we needed to here prepare and send the whole thing:
+auth: {
+  uid: 1234
+}
+Nope! Didn't need to!
+
+In fact, I actually thought we needed to be handling the whole damned state/store, and so I got my spread operator on:
+{
+  ...state,
+  auth: {
+    uid: 1234
+  }
+}
+Nope!! Really didn't need to!!
+ok.
+*/
+
+
+
+
+      return {
+        uid: action.uid,
+      };
+    case 'LOGOUT':
+      // WR__ CODE! (see above comments)
+      // return {
+      //   ...state,
+      //   auth: {}, // remove that user uid
+      // };
+      // INSTRUCTOR CODE
+      //  Hmm, different approach from mine...
+      return {
+        // just empty object
+      };
+    default:
+      return state;
+  }
+};
+
+// ------------------------------
 // Search text
 export var searchTextReducer = (state = '', action) => {
 
@@ -60,7 +138,7 @@ True enough: "unreachable code"
     //     oppositeCompletedState = true;
     //   }
     //   return  oppositeCompletedState; // reverse the Boolean
-    
+
 // Interesting. I'd commented out this default: case.
 // Got this error msg:
 /*

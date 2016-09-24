@@ -13,11 +13,37 @@ var actions = require('actions');
 // MOCK STORE!  "generator"
 // create as many stores as you need ...
 // Do not share/reuse them among tests. ...
-// Pass in an array of middleware (just, thunk)
+// Pass in an array of middleware (thus far just, thunk)
 var createMockStore = configureMockStore([thunk]);
 
 
 describe('Actions', () => {
+
+  // SYNCHRONOUS
+  it('should MERELY generate the login action', () => {
+    var action = {
+      // Cool: yes, this also passes.
+      //  That is, the ordering of object properties does NOT
+      //  matter for object equivalency testing. Bon.
+      // uid: '12345testuid',
+      // type: 'LOGIN',
+      type: 'LOGIN',
+      uid: '12345testuid',
+    };
+
+    const response = actions.login(action.uid);
+    expect(response).toEqual(action);
+  });
+
+  // SYNCHRONOUS
+  it('should MERELY generate the logout action', () => {
+    const action = {
+      type: 'LOGOUT',
+    };
+
+    const response = actions.logout();
+    expect(response).toEqual(action);
+  });
 
   it('should generate the search text action', () => {
     var action = {

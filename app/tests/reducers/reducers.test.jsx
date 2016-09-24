@@ -10,6 +10,72 @@ var lilInspector = require('lilInspector');
 var reducers = require('reducers');
 
 describe('Reducers',  () => {
+
+  describe('authReducer', () => {
+    it('should upon login, add/set user.uid to state', () => {
+      const action = {
+        type: 'LOGIN',
+        uid: '123456testuid',
+      };
+
+      // This did work:
+      // const response = reducers.authReducer(df({}), df(action));
+      /* Interesting: Instructor code passes 'undefined' for the state, which I believe he said means that the initial default state will get used. okay. */
+      const response = reducers.authReducer(undefined, df(action));
+
+      // Wrong - See reducers.jsx re: my WR__ Code erroneous understanding.
+      // expect(result.auth.uid).toEqual(action.uid);
+      // This did work, but see below for Instructor Code better test:
+      // expect(response.uid).toEqual(action.uid);
+
+      /* Instructor code: okay, here we see what is returned from the reducer is literally:
+      {
+        uid: '123456testuid'
+      }
+      such that what's returned is attached to the state like so:
+      {
+        ...state,
+        auth: {
+          uid: '123456testuid'
+        }
+      }
+      */
+      expect(response).toEqual(
+        {
+          uid: action.uid
+        }
+      );
+    });
+
+    it('should upon logout, remove user.uid from state (Wipe!)', () => {
+      // Need a default value, here in the test, to wipe!
+      const authData = {
+        uid: '123abc',
+      };
+
+      const action = {
+        type: 'LOGOUT',
+      };
+
+      // "reducers should not be updating their inputs"
+      const response = reducers.authReducer(df(authData), df(action));
+
+      // Error: Expected undefined to be null
+      // Wrong - See reducers.jsx re: my WR__ Code misunderstanding
+      // expect(result.auth.uid).toBe(undefined); // not null, but undefined. ok.
+
+      // This worked ...
+      // expect(response.uid).toBe(undefined);
+
+      // Instructor Code
+      expect(response).toEqual(
+        {
+          // empty object. No { uid: '123abc' } anymore. Wiped.
+        }
+      );
+    });
+  });
+
   describe('searchTextReducer', () => {
     it('should set searchText', () => {
       /* Note: we here manually create / hard-code our action, as opposed to generating it dynamically from the action generator code.
