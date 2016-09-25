@@ -56,6 +56,7 @@ describe('Actions', () => {
     expect(res).toEqual(action);
   });
 
+
   it('should MERELY generate the add Todo action', () => {
 /* *** FIREBASE Refactoring **** */
 // Yep:
@@ -101,28 +102,11 @@ describe('Actions', () => {
   });
 
 
-// ASYNCH TEST
-// Tell Mocha keep listening till done is called
-  it('should run startAddTodo (singular), to create todo and dispatch ADD_TODO (singular)', (done) => {
-    // call with empty store {}
-    const store = createMockStore({});
-    const todoText = 'My aysnch todo item, from actions.test.jsx';
-
-    store.dispatch(actions.startAddTodo(todoText)).then( () => {
-      // success handler
-      // returns array of all actions that were fired...
-      const actions = store.getActions();
-      // toInclude tests simply that what you specify is in there, is included (Among perhaps other properties etc.)
-      expect(actions[0]).toInclude({
-        type: 'ADD_TODO'
-      });
-      expect(actions[0].todo).toInclude({
-        text: todoText
-      });
-      // You must call done!
-      done();
-    }).catch(done);
-  });
+  /* *** TESTING w. AUTHENTICATION  LECTURE 146 ***  07:04 */
+  /* This Test used to be in this first section - not truly using Firebase todos.
+  Now with Authentication, has to be moved down to lower, nested Describe() group that does use Firebase, authenticates. etc.
+  */
+  // it('should run startAddTodo (singular), to create todo and dispatch ADD_TODO (singular)', (done) => {
 
 
 // *** LOCALSTORAGE Redux Refactoring, going to LocalStorage
@@ -152,85 +136,142 @@ describe('Actions', () => {
   });
 
 
+/* $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ */
+/* $$$$$$$$$$  Tests with Firebase todos  $$$$$$$ */
+/* $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ */
+/* $$$$$$$$  MOVED FROM THIS SECTION TO BELOW $$$ */
+/* $$$$$$$$   OK - TIME FOR CLEAN-UP $$$$$$$$$$$$ */
+/* Have to refactor, consolidate, correct.
+    WR__ code had 2 sections where should have been 1.
+    WR__ code had lacunae where should have been none.
+*/
+/* $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ */
   // ********* 2nd Level DESCRIBE 01  PLURAL *********
-  describe('ASYNCH Tests with Firebase, getting all Todos - initial state', () => {
-// WR__ we'll see...
-    var aRefToTodos; // ?
+  /* *** TESTING w. AUTHENTICATION  LECTURE 146 ***  07:28 */
+  /* The WR__ Code has two sections for this, whereas the Instructor Code has it in one.
+  I refer to the Describe() section that actually goes to Firebase for actionable todos data, and that has setup and teardown code for testing (beforeEach() and afterEach()).
+  WR__ Code has one section that creates a 2-item todos array ("plural"), and another that creates a 1-item todos array ("singular").
 
-    // MOCHA (again) :)
-    beforeEach( (done) => {
+  In these two sections are the two tests that needed to go to Firebase for actual todos:
+  1. - Testing Update a Todo (toggle showCompleted). So, startToggleTodo does the Find of that particular Todo on Firebase. (1-item section, above)
+  2. - Testing Add all the Todos to the app (e.g. TodoList). So startAddTodos (plural) does the Find of all those Todos on Firebase. (2-item section, below)
 
-// WR__ we'll see...
-      aRefToTodos = firebase.database().ref().child('todos'); // ?
+  Now that AUTHENTICATION is involved, a 3rd test must join this section (the one with 2-item (though it doesn't really matter which)):
+  3. - Testing Add a single Todo to Firebase. So, startAddTodo (singular) - it doesn't do a "FIND" on Firebase, but, to do any adding, you DO need to be authenticated, and to say which User you are.
+  That's why it now joins the Describe() section for Firebase actions.
+  */
+//   describe('ASYNCH Tests with Firebase, getting all Todos - initial state', () => {
+// // WR__ we'll see...
+//     var aRefToTodos; // ?
+//
+//
+//     // MOCHA (again) :)
+//     beforeEach( (done) => {
+//
+// // WR__ we'll see...
+//       aRefToTodos = firebase.database().ref().child('todos'); // ?
+//
+//       var todosRef = firebaseRef.child('todos');
+//
+//       // CLEAN OUT PRE-EXISTING CONDITIONS ;o)
+//       todosRef.remove().then( () => {
+//         // success handler for (1st) promise
+//
+//         // NOW READY TO LOAD DB "BEFORE" EACH TEST:
+//
+// // WR__ we'll see...        aRefToTodos.set([
+//
+//         // CHAIN by Returning, to the promise ...
+//         return todosRef.set([
+//             {
+//               text: 'Firebase TODOS 01 actions test',
+//               completed: false,
+//               createdAt: 234567,
+//             },{
+//               text: 'Firebase TODOS 02 actions test',
+//               completed: false,
+//               createdAt: 234500,
+//             }
+//         ])
+//         // then moves on to the actual test case code...
+//       })
+//       .then( () => done() ) // success handler for (2nd) promise
+//       .catch(done);
+//
+//
+//     });
+//
+//     afterEach( (done) => {
+//       aRefToTodos.remove().then( () => done() );
+//     });
 
-      var todosRef = firebaseRef.child('todos');
 
-      // CLEAN OUT PRE-EXISTING CONDITIONS ;o)
-      todosRef.remove().then( () => {
-        // success handler for (1st) promise
+    /* *** TESTING w. AUTHENTICATION  LECTURE 146 ***  7:04 */
+    /*
+    Before, this test for startAddTodo WAS in the general Describe() section above. But now that we use Authentication, must be in this lower-down, nested Describe() that uses Firebase todos.
+    To ADD a todo now, we must authenticate, and must have a specific user ID.
+    */
 
-        // NOW READY TO LOAD DB "BEFORE" EACH TEST:
+    // ASYNCH TEST
+    // Tell Mocha keep listening till done is called
+    // it('should run startAddTodo (singular), to create todo and dispatch ADD_TODO (singular)', (done) => {
+    //   // call with empty store {}
+    //   const store = createMockStore({});
+    //   const todoText = 'My aysnch todo item, from actions.test.jsx';
+    //
+    //   store.dispatch(actions.startAddTodo(todoText)).then( () => {
+    //     // success handler
+    //     // returns array of all actions that were fired...
+    //     const actions = store.getActions();
+    //     // toInclude tests simply that what you specify is in there, is included (Among perhaps other properties etc.)
+    //     expect(actions[0]).toInclude({
+    //       type: 'ADD_TODO'
+    //     });
+    //     expect(actions[0].todo).toInclude({
+    //       text: todoText
+    //     });
+    //     // You must call done!
+    //     done();
+    //   }).catch(done);
+    // });
 
-// WR__ we'll see...        aRefToTodos.set([
-
-        // CHAIN by Returning, to the promise ...
-        return todosRef.set([
-            {
-              text: 'Firebase TODOS 01 actions test',
-              completed: false,
-              createdAt: 234567,
-            },{
-              text: 'Firebase TODOS 02 actions test',
-              completed: false,
-              createdAt: 234500,
-            }
-        ])
-        // then moves on to the actual test case code...
-      })
-      .then( () => done() ) // success handler for (2nd) promise
-      .catch(done);
 
 
-    });
 
-    afterEach( (done) => {
-      aRefToTodos.remove().then( () => done() );
-    });
-
-    // ASYNCHRONOUS
-    it('should run startAddTodos (plural), to get todos from Firebase, and dispatch ADD_TODOS (plural) ', (done) => {
-      const store = createMockStore({});
-
-      // From the instructor code/video:
-      const action = actions.startAddTodos();
-
-      // store.dispatch(actions.startAddTodos()).then( () => {
-      // Instructor improvement:
-      store.dispatch(action).then( () => {
-          // success handler
-          // returns all the actions since store created:
-          const actionsFired = store.getActions();
-
-          expect(actionsFired[0]).toInclude({
-            type: 'ADD_TODOS',
-          });
-          // same thing:
-          expect(actionsFired[0].type).toEqual('ADD_TODOS');
-
-          // or .toEqual
-          expect(actionsFired[0].todos.length).toBe(2);
-
-          expect(actionsFired[0].todos[0].text).toEqual('Firebase TODOS 01 actions test');
-
-          expect(actionsFired[0].todos[0].text).toInclude('01');
-
-          done(); // Non dimenticare!
-          // will go back to afterEach() ... :)
-
-      }).catch(done); // error handler...
-    });
-
-  }); // /describe ASYNCH stuff...
+  //   // ASYNCHRONOUS
+  //   it('should run startAddTodos (plural), to get todos from Firebase, and dispatch ADD_TODOS (plural) ', (done) => {
+  //     const store = createMockStore({});
+  //
+  //     // From the instructor code/video:
+  //     const action = actions.startAddTodos();
+  //
+  //     // store.dispatch(actions.startAddTodos()).then( () => {
+  //     // Instructor improvement:
+  //     store.dispatch(action).then( () => {
+  //         // success handler
+  //         // returns all the actions since store created:
+  //         const actionsFired = store.getActions();
+  //
+  //         expect(actionsFired[0]).toInclude({
+  //           type: 'ADD_TODOS',
+  //         });
+  //         // same thing:
+  //         expect(actionsFired[0].type).toEqual('ADD_TODOS');
+  //
+  //         // or .toEqual
+  //         expect(actionsFired[0].todos.length).toBe(2);
+  //
+  //         expect(actionsFired[0].todos[0].text).toEqual('Firebase TODOS 01 actions test');
+  //
+  //         expect(actionsFired[0].todos[0].text).toInclude('01');
+  //
+  //         done(); // Non dimenticare!
+  //         // will go back to afterEach() ... :)
+  //
+  //     }).catch(done); // error handler...
+  //   });
+  //
+  // }); // /describe ASYNCH stuff...
 
 
 
@@ -268,22 +309,66 @@ describe('Actions', () => {
   });
 
 
+/* $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ */
+/* $$$$$$$$$$  Tests with Firebase todos  $$$$$$$ */
+/* $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ */
+/* $$$$$$$$   OK - TIME FOR CLEAN-UP $$$$$$$$$$$$ */
+/* Have to refactor, consolidate, correct.
+    WR__ code had 2 sections where should have been 1.
+    WR__ code had lacunae where should have been none.
+*/
+/* $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ */
+  /* *** TESTING w. AUTHENTICATION  LECTURE 146 ***  7:04 */
   // ********* 2nd Level DESCRIBE 02 SINGULRAR *********
   /* *** FIREBASE Refactoring *** */
   // Lecture 135 7:30   SINGULAR UPDATE ONE TODO
+
+
   describe('Tests with Firebase todos', () => {
-    var testTodoRef;
+    var testTodoRef; // individual Todo
+
+    /* *** TESTING w. AUTHENTICATION  LECTURE 146 ***  8:02 */
+    var uid;
+    var todosRef; // all todos
 
     // MOCHA:
     // Asynch
     beforeEach( (done) => {
-      testTodoRef = firebaseRef.child('todos').push();
+      /* *** TESTING w. AUTHENTICATION  LECTURE 146 ***  8:15 */
+      /* Notes:
+      O.K., /app/firebase/index.js has:
+      /* *** OAUTH GITHUB **** ...
+      export var githubProvider = new firebase.auth.GithubAuthProvider();
+      And actions.jsx has:
+      firebase.auth().signInWithPopup(githubProvider)...
+      */
 
-      testTodoRef.set({
-        text: 'Firebase actions test',
-        completed: false,
-        createdAt: 2345,
-      }).then( () => done() ); // when promise returns, we fire done()
+      var credential = firebase.auth.GithubAuthProvider.credential(process.env.GITHUB_ACCESS_TOKEN);
+
+      // call in as a function. No redirects etc.
+      // We get back the user object (in 'then')
+      firebase.auth().signInWithCredential(credential).then( (user) => {
+        // success funct
+        uid = user.uid;
+        // tick marks are `template string`:
+        // Recall our database root now has /users/, no longer /todos/
+        todosRef = firebaseRef.child(`users/${uid}/todos`);
+        // We move this next line from below to here inside the "success" function, and keep the chain going by returning it, to 'then()...'
+        return todosRef.remove();
+      }).then( () => {
+        // Old location: at the todos that was at top of Firebase database.
+        // testTodoRef = firebaseRef.child('todos').push();
+        // New location: at the todos for that particular user
+        testTodoRef = todosRef.push();
+        return testTodoRef.set({
+          text: 'Firebase actions test',
+          completed: false,
+          createdAt: 2345,
+        })
+      })
+      .then( () => done())
+      .catch(done);
+      // when promise returns, we fire done()
       // Same as one-liner above:
       // }).then( () => {
       //   // when promise returns, we fire done()
@@ -293,12 +378,86 @@ describe('Actions', () => {
 
     // Clean up after testing!
     afterEach( (done) => {
-      testTodoRef.remove().then( () => done() );
+      // We used to just remove the one Todo we made
+      // testTodoRef.remove().then( () => done() );
+      // Now we remove them all, off that particular user:
+      todosRef.remove().then( () => done() );
     });
+
+
+    /* *** TESTING w. AUTHENTICATION  LECTURE 146 ***  7:04 */
+    /*
+    Before, this test for startAddTodo WAS in the general Describe() section above. But now that we use Authentication, must be in this lower-down, nested Describe() that uses Firebase todos.
+    To ADD a todo now, we must authenticate, and must have a specific user ID.
+    */
+    it('should run startAddTodo (singular), to create todo and dispatch ADD_TODO (singular)', (done) => {
+      // call with empty store {}
+      // const store = createMockStore({});
+      /* Now with TESTING AUTHENTICATION, we want to pass in not empty object but an object that has auth: { uid } information:
+      */
+      // const store = createMockStore({ auth: { uid: uid} }); // ES5
+      const store = createMockStore({ auth: { uid } }); // ES6
+      const todoText = 'My aysnch todo item, from actions.test.jsx';
+
+      store.dispatch(actions.startAddTodo(todoText)).then( () => {
+        // success handler
+        // returns array of all actions that were fired...
+        const actions = store.getActions();
+        // toInclude tests simply that what you specify is in there, is included (Among perhaps other properties etc.)
+        expect(actions[0]).toInclude({
+          type: 'ADD_TODO'
+        });
+        expect(actions[0].todo).toInclude({
+          text: todoText
+        });
+        // You must call done!
+        done();
+      }).catch(done);
+    });
+
+
+
+    // ASYNCHRONOUS
+    it('should run startAddTodos (plural), to get todos from Firebase, and dispatch ADD_TODOS (plural) ', (done) => {
+      // const store = createMockStore({});
+      const store = createMockStore({ auth: { uid } }); // ES6
+
+      // From the instructor code/video:
+      const action = actions.startAddTodos();
+
+      // store.dispatch(actions.startAddTodos()).then( () => {
+      // Instructor improvement:
+      store.dispatch(action).then( () => {
+          // success handler
+          // returns all the actions since store created:
+          const actionsFired = store.getActions();
+
+          expect(actionsFired[0]).toInclude({
+            type: 'ADD_TODOS',
+          });
+          // same thing:
+          expect(actionsFired[0].type).toEqual('ADD_TODOS');
+
+          // or .toEqual
+          // expect(actionsFired[0].todos.length).toBe(2);
+          // We used to have a separate beforeEach setup for plural that had 2 items; no longer, it just shares the same set up of a 1-item array.
+          expect(actionsFired[0].todos.length).toBe(1);
+
+          expect(actionsFired[0].todos[0].text).toEqual('Firebase actions test');
+
+          expect(actionsFired[0].todos[0].text).toInclude('actions');
+
+          done(); // Non dimenticare!
+          // will go back to afterEach() ... :)
+
+      }).catch(done); // error handler...
+    });
+
 
     it('should toggle todo (run startToggleTodo) and dispatch UPDATE_TODO action', (done) => {
       // Optional: Pass in data for your store.
-      const store = createMockStore({});
+      // const store = createMockStore({});
+      const store = createMockStore({ auth: { uid } }); // ES6
       // The ID is the key from Firebase:
       // Set the 'completed' value in hard-coded manner to true (since it's false in our test Todo (above), and we want to toggle it.)
       // (I suppose we could negate the value on that object; oh well)
@@ -326,12 +485,12 @@ describe('Actions', () => {
           });
 
 // PASSES:
-        //  expect(mockActions[0].updates).toInclude({
-        //    completed: true,
-        //  });
+         expect(mockActions[0].updates).toInclude({
+           completed: true,
+         });
 
 // PASSES:
-        //  expect(mockActions[0].updates.completedAt).toExist();
+         expect(mockActions[0].updates.completedAt).toExist();
 
 
 /* http://www.epochconverter.com/
@@ -341,7 +500,7 @@ Your time zone: 9/16/2016, 1:28:52 PM GMT-4:00 DST
 var unixTimeWhenIWroteTest = 1474046932;
 
 // PASSES:
-        //  expect(mockActions[0].updates.completedAt).toBeGreaterThan(unixTimeWhenIWroteTest);
+         expect(mockActions[0].updates.completedAt).toBeGreaterThan(unixTimeWhenIWroteTest);
         //
          done(); // Don't forgte to call done()!
         //
