@@ -85,7 +85,28 @@ export var startAddTodo = (text) => {
     // Here, a new Reference to Firebase.
     // Store all the todos for our app, in this Firebase 'todos' array
     // Now our data is on our Firebase database (good) ...
-    var todoRef = firebaseRef.child('todos').push(todo);
+
+    /* *** PER-USER/TODOS  LECTURE 145 *** */
+    // Returns state of app = Redux Store
+    var uid = getState().auth.uid;
+    /* e.g. the State now holds the userid under auth:
+      {
+        auth: {
+          uid: asdf1234
+        },
+        searchText: 'day',
+        showComplete: false,
+        todos: [
+          ...
+        ]
+      }
+    */
+    // WAS (below): child('todos'),
+    // NOW: child('users/uid#/todos')
+    // E.G.: var todoRef = firebaseRef.child('users/abcsampleuserid/todos').push(todo);
+    // Further: Use the `tick` quote and ${} interpolation to get JavaScript variable!:
+    var todoRef = firebaseRef.child(`users/${uid}/todos`).push(todo);
+    // var todoRef = firebaseRef.child('todos').push(todo);
     // ...But, the todo is not yet added to our app, to our store... / state...
     /* So ...: This Dispatch (right below) of the addTodo action (found above) will send the new Todo to the Store, that is, this step puts the Todo onto / into the State for our React-Redux application.
     Right?
@@ -129,12 +150,21 @@ export var startAddTodos = () => {
 //    WITH DISPATCH and GETSTATE:
 // LECTURE 136  6:15
   return (dispatch, getState) => {
+
+    /* *** PER-USER/TODOS  LECTURE 145 *** */
+    var uid = getState().auth.uid;
+
+
     var todosFromFirebaseObj = {}; // comes back as Object
     // https://firebase.google.com/docs/database/web/retrieve-data
 
     // ONCE returns a Promise we call with data snapshot
     // RETURN CHAINS the promise, so can be used in test
-    return firebase.database().ref().child('todos').once('value').then( (snapshot) => {
+
+    /* *** PER-USER/TODOS  LECTURE 145 *** */
+    // Use that var uid to write to Firebase under that user:
+    // return firebase.database().ref().child('todos').once('value').then( (snapshot) => {
+    return firebase.database().ref().child(`users/${uid}/todos`).once('value').then( (snapshot) => {
 
 console.log("WR__ 666 snapshot.val(): ", snapshot.val()); //
 
@@ -302,11 +332,21 @@ export var updateTodo = (id, updates) => {
 //   are we going from T to F, or F to T ?
 export var startToggleTodo = (id, completed) => {
   return (dispatch, getState) => {
+
+    /* *** PER-USER/TODOS  LECTURE 145 *** */
+    var uid = getState().auth.uid;
+
+
     // ES5 Plain ol'
     // var todoRef = firebaseRef.child('todos/' + id);
     // ES6 Template Strings:
     // Insert JavaScript after $, inside {}
-    var todoRef = firebaseRef.child(`todos/${id}`);
+
+    /* *** PER-USER/TODOS  LECTURE 145 *** */
+    // Now it's the todos for a particular user:
+    // var todoRef = firebaseRef.child(`todos/${id}`);
+    var todoRef = firebaseRef.child(`users/${uid}/todos/${id}`);
+    
     var updates = {
       completed: completed,
       completedAt: completed ? moment().unix() : null

@@ -89,16 +89,20 @@ firebase.auth().onAuthStateChanged( (user) => {
     /* Hah. Found out you need to do this *before* you dispatch the action. It ain't comin' back after that, 'pparently. H-okay.
     */
 
-    // swap out the URL with something new
-    hashHistory.push('/todos');
     console.log("WR__ APP.JSX IF USER user.uid :) ", user.uid);
     // D'oh!  dispatch(actions.login(user.uid));
     store.dispatch(actions.login(user.uid));
+    /* *** PER-USER/TODOS  LECTURE 145 *** */
+    /* This used to get all todos; now must come only after login tells us WHICH user:
+    */
+    store.dispatch(actions.startAddTodos());
+    // swap out the URL with something new
+    hashHistory.push('/todos');
   } else {
-    hashHistory.push('/');
     console.log("WR__ APP.JSX IF NO USER user.uid :) ");
     // D'oh!  dispatch(actions.logout());
     store.dispatch(actions.logout());
+    hashHistory.push('/');
   }
 });
 
@@ -153,7 +157,15 @@ firebase.auth().onAuthStateChanged( (user) => {
 // After the Asynchronous action (startAddTodos), we'll
 //   still call the Synchronous action (addTodos) to
 //   refresh the store, providing data to the app
-store.dispatch(actions.startAddTodos());
+
+
+/* *** PER-USER/TODOS  LECTURE 145 8:30 *** */
+/* Interesting: No longer can we call a generic startAddTodos here in app.jsx like so.
+Now we must wait till login has occurred, so we know which user's todos we are to start adding!
+See above at login dispatch for where this startAddTodos dispatch has been moved.
+*/
+// store.dispatch(actions.startAddTodos());
+
 /* *** /FIREBASE Refactoring LECTURE 136 *** */
 
 
