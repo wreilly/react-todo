@@ -111,6 +111,34 @@ describe('Reducers',  () => {
   });
 
   describe('todosReducer', () => {
+
+    it('should wipe all todos out upon Logout (in addition to wiping out user:uid, in the authReducer)', () => {
+      const todos = [
+        {
+          id: 'handmade_id_123499',
+          text: 'WIPEOUT 99 HANDMADEVAR REDUCER Write me a hard-coded Todo inside Reducer test',
+          completed: false,
+          completedAt: null,
+          createdAt: 1000,
+        },
+        {
+          id: 'handmade_id_123488',
+          text: 'WIPEOUT 88 HANDMADEVAR REDUCER Write me a hard-coded Todo inside Reducer test',
+          completed: false,
+          completedAt: null,
+          createdAt: 1001,
+        },
+      ];
+      const action = {
+        type: 'LOGOUT',
+      };
+      // TESTING *NOT* RUNNING THIS REDUCER.
+      const response = reducers.todosReducer( df(todos), df(action) );
+
+      // expect(response).toEqual([]); // ?
+      expect(response.length).toEqual(0);
+    });
+
     it('should add new todo (singular)', () => {
   /* *** FIREBASE Refactoring **** */
   // Yep: (see also actions.test.jsx)

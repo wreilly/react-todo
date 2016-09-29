@@ -1,6 +1,41 @@
 var uuid = require('node-uuid');
 var moment = require('moment');
 
+/* *** WR__ IDEA *** */
+// ------------------------------
+//  stateReducer - Logout!
+// "Slice" of state is? - Da Whole Damned Fing
+// Need to alter both todos and auth, on logout
+// Wonder is there some downside to this approach.
+// We shall see ...
+
+/*
+Hah! Busted. See note over in configureStore.jsx
+*/
+// NO. NO DAMNED 'stateReducer'. Busted. Oy!
+// export var stateReducer = ( state = {}, action ) => {
+//   switch (expression) {
+//     case 'LOGOUT':
+//       // WR__ CODE! (see above comments)
+//       // return {
+//       //   ...state,
+//       //   auth: {}, // remove that user uid
+//       // };
+//       // INSTRUCTOR CODE
+//       //  Hmm, different approach from mine...
+//       return {
+//         ...state,
+//         todos: [],  // just empty array
+//         auth: {}, // just empty object
+//       };
+//     default:
+//       console.log("WR__ 000011 reducers.jsx AUTHReducer. DEFAULT switch case (no Action called). Are we here at VERY START of APP? state {} is empty Object, user is null? I suppose. YES! All true. H'rrah.", state);
+//       return state;
+//   }
+// };
+
+
+
 // ------------------------------
 // AUTH - Login, Logout
 // "Slice" of state is?
@@ -11,6 +46,18 @@ var moment = require('moment');
 // No idea: Should the slice of state here get a default? e.g. {} ?? Boh!
 // export var authReducer = (state, action) => { // does work ...
 // 6:47 Yes! state = {}
+
+/* http://redux.js.org/docs/basics/Reducers.html
+function todoApp(state, action) {
+  if (typeof state === 'undefined') {
+    return initialState
+  } ...
+
+One neat trick is to use the ES6 default arguments syntax to write this in a more compact way:
+function todoApp(state = initialState, action) {
+https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Functions/default_parameters
+*/
+
 export var authReducer = (state = {}, action) => { // does work ...
   switch (action.type) {
     case 'LOGIN':
@@ -63,6 +110,29 @@ ok.
       return {
         uid: action.uid,
       };
+
+
+    /* *** WR__ IDEA *** */
+    /*
+    Hmm - What If ...
+    What if, to solve for havin LOGOUT action not only wipe the auth off of state (as below, here in authReducer, where the slice of state is auth: {})
+     auth: { uid: ### } }
+    BUT, *also* the todos off of state. Hmm.
+    {
+      todos: [ {}, {}]
+    }
+    To do that, I think we need to MOVE 'LOGOUT' away from the authReducer over to the todosReducer, where the slice of state is todos: [{}.{}]
+    Hmm, maybe even that won't do it.
+    Hmm, do I need to creata NEW REDUCER, one that gets for its slice of state the whole kanoodle?
+    Such that it can wipe both auth: and todos: ?
+    Hmm.
+    */
+    /*
+    One more thought: Hmm, so, if the action 'LOGOUT' *had* been steered to go to authReducer, and I simply *move* it down to todosReducer, or, even to another new Reducer (?), I guess that whole Redux combineReducers thing will take care to now steer 'LOGOUT' to that new, different reducer. ok.
+    */
+
+    /* *** WR__ IDEA *** */
+// ** ORIGINAL 'LOGOUT' UNDER AUTHREDUCER: AUTH: ONLY
     case 'LOGOUT':
       // WR__ CODE! (see above comments)
       // return {
@@ -75,9 +145,46 @@ ok.
         // just empty object
       };
     default:
+      console.log("WR__ 0000 reducers.jsx AUTHReducer. DEFAULT switch case (no Action called). Are we here at VERY START of APP? state {} is empty Object, user is null? I suppose. YES! All true. H'rrah.", state); // {} I think - yep!
       return state;
-  }
-};
+
+
+// ** NEW 'LOGOUT' ALSO UNDER AUTHREDUCER: AUTH: AND TODOS: BOTH ( ?? )
+/* *** WR__ IDEA *** */
+// ------------------------------
+//  stateReducer - Logout!
+// "Slice" of state is? - Da Whole Damned Fing
+// Need to alter both todos and auth, on logout
+// Wonder is there some downside to this approach.
+// We shall see ...
+
+/*
+Hah! Busted. See note over in configureStore.jsx
+*/
+// NO. NO DAMNED 'stateReducer'. Busted. Oy!
+// export var stateReducer = ( state = {}, action ) => {
+//   switch (expression) {
+//     case 'LOGOUT':
+//       // WR__ CODE! (see above comments)
+//       // return {
+//       //   ...state,
+//       //   auth: {}, // remove that user uid
+//       // };
+//       // INSTRUCTOR CODE
+//       //  Hmm, different approach from mine...
+//       return {
+//         ...state,
+//         todos: [],  // just empty array
+//         auth: {}, // just empty object
+//       };
+//     default:
+//       console.log("WR__ 000011 reducers.jsx AUTHReducer. DEFAULT switch case (no Action called). Are we here at VERY START of APP? state {} is empty Object, user is null? I suppose. YES! All true. H'rrah.", state);
+//       return state;
+//   }
+// };
+
+  } // /switch case(s)
+}; // /authReducer
 
 // ------------------------------
 // Search text
@@ -167,6 +274,15 @@ console.log("WR__ 88888 todosReducer, action.type is: ", action.type);
 //* *** FIREBASE Refactoring *** */
 // This logic going to be moved for Firebase:
   switch (action.type) {
+    case 'LOGOUT':
+      return []; // Q. Is that it? empty array where todos had been ????
+                // Is there any concept of then, calling (?) 'LOGOUT' on authReducer?
+                // Or does that sort of come for free?
+                //   One dispatch of 'LOGOUT' gets BOTH
+                //   the one in authReducer and the one here in todosReducer ?
+                //
+                // A. Yes! That's it.
+
     case 'ADD_TODO':
       return [
         ...state,
@@ -353,5 +469,5 @@ The values in the object you return MAY be updated/modified. Bon.
         ];
     default:
       return state;
-  }
-};
+  } // /switch
+}; // /todosReducer

@@ -15,7 +15,10 @@ import thunk from 'redux-thunk';
 // OLD require way:
 // var { searchTextReducer, showCompletedReducer, todosReducer} = require('reducers');
 
+/* *** WR__ IDEA ***  stateReducer cwaziness */
 // NEW 'import' way:
+// NO. NO DAMNED 'stateReducer'. Busted. Oy!
+// import { stateReducer, authReducer, searchTextReducer, showCompletedReducer, todosReducer} from 'reducers';
 import { authReducer, searchTextReducer, showCompletedReducer, todosReducer} from 'reducers';
 
 
@@ -25,6 +28,18 @@ export var configure = (initialState = {}) => {
   The shape of the state object matches the keys of the passed reducers.
 
 A popular convention is to name reducers after the state slices they manage, so you can use ES6 property shorthand notation: combineReducers({ counter, todos }). This is equivalent to writing combineReducers({ counter: counter, todos: todos }).
+*/
+/* *** WR__ IDEA *** */
+/*
+Hah! Busted. What are you going to name your overall "state" reducer here, eh?
+That is -you cannot expect to put some one thing in the 'left-hand side' in the object below, to represent BOTH the 'auth:' AND the 'todos:'. Those two things are already on the state! You can't introduce a 'new' (?) reducer here, to tackle handling two sibling parts of state, both up at the root level like this. (To my understanding.)
+Maybe instead: do the authReducer removal of auth:, and right there, dispatch another Action to go get the todosReducer to remove the todos: ? (Prob can't dispatch an Action from inside a reducer.)
+Googling: No, squire, no dispatching of an action from a reducer. "Anti-pattern!" Oo-la.
+Next idea up: re-write the 'LOGOUT' reducer to receive a two-part slice of state? { auth: {}, todos: [] } ??
+Can you do that? No idea.
+*/
+/* http://redux.js.org/docs/basics/Reducers.html
+
 */
   var reducer = redux.combineReducers({
     // KEY "state slice" e.g. text, Boolean, array ...

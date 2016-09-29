@@ -346,7 +346,7 @@ export var startToggleTodo = (id, completed) => {
     // Now it's the todos for a particular user:
     // var todoRef = firebaseRef.child(`todos/${id}`);
     var todoRef = firebaseRef.child(`users/${uid}/todos/${id}`);
-    
+
     var updates = {
       completed: completed,
       completedAt: completed ? moment().unix() : null
@@ -368,15 +368,15 @@ export var startToggleTodo = (id, completed) => {
 
 /* *** OAUTH GITHUB LOGIN LOGOUT **** */
 // SYNCHRONOUS
-  export var login = (uid) => {
-    return {
-      type: 'LOGIN',
-      // ES5:
-      uid: uid,
-      // ES6:
-      // uid,
-    };
+export var login = (uid) => {
+  return {
+    type: 'LOGIN',
+    // ES5:
+    uid: uid,
+    // ES6:
+    // uid,
   };
+};
 
 /* I guess something I don't understand: how does this Firebase action invocation of fb.auth() below cause the result.user to be made available to the listener/observe set up over in app.jsx ?
 fb.auth().onAuthStateChanged
@@ -390,55 +390,57 @@ var wr__MessyGlobalOAuthResultHolder = {};
 /* For logging in, this ASYNCHRONOUS "startLogin" action IS paired with a SYNCHRONOUS 'login' action.
 BUT, that 'login' one is invoked (dispatched) NOT from right within the "start" one (like in the other "start" actions seen herein (e.g. startAddTodo itself directly calls addTodo)). INSTEAD, the 'login' is dispatched from over in APP.JSX, inside of its listener/observer fb.auth().onAuthStateChanged(). Cheers.
 */
-  export var startLogin = () => {
-    return (dispatch, getState) => {
-      // firebase.auth() returns many functions; we use as below:
-      // 'return' keeps the chain going
-      // For example of 'result', see
-      /*
+export var startLogin = () => {
+  return (dispatch, getState) => {
+    // firebase.auth() returns many functions; we use as below:
+    // 'return' keeps the chain going
+    // For example of 'result', see
+    /*
 I just copied and pasted this big honkin' Object out of the Console (partially expanded, not entirely):
 
 /Users/william.reilly/dev/JavaScript/React/Udemy-REACT-Complete-Developer-Course/11Firebase/...
 ...react-11-17-CONSOLELOG-Example-OAuthSuccessObject.js
-      */
-      return firebase.auth().signInWithPopup(githubProvider).then( (result)  => {
-          // 1. Success path
+    */
+    return firebase.auth().signInWithPopup(githubProvider).then( (result)  => {
+        // 1. Success path
 
-          // This var did get assigned. ok.
-          wr__MessyGlobalOAuthResultHolder = result;
-
-          /* As per note above, the SYNCHRONOUS action 'login' is not called here; it's dispatched from over in the listener/observer in APP.JSX.
-          */
-
-          console.log('Auth worked!', result);
-        }, (error) => {
-          // 2. Error path
-          console.log('Solly! Unable to auth', error);
-        });
-    };
-  };
-
-  export var logout = () => {
-    return {
-      type: 'LOGOUT',
-    };
-  };
-
-  export var startLogout = () => {
-    return (dispatch, getState) => {
-      return firebase.auth().signOut().then( () => {
-        // This did show (console.log) the Object's value. ok.
-        /* r__MessyGlobalOAuthResultHolder Object {user: W, credential: Mf}
-
-        But then it was not available after page rendering complete, in the console:
-        > wr__MessyGlobalOAuthResultHolder.user.uid
-VM7509:1 Uncaught ReferenceError: wr__MessyGlobalOAuthResultHolder is not defined(…)
-        Ah well.
+        // This var did get assigned. ok.
+        /* e.g. wr__MessyGlobalOAuthResultHolder Object {user: W, credential: Mf}
         */
-        console.log("wr__MessyGlobalOAuthResultHolder", wr__MessyGlobalOAuthResultHolder);
-        console.log("Logged out!");
-      });
-    };
+        wr__MessyGlobalOAuthResultHolder = result;
+
+        /* As per note above, the SYNCHRONOUS action 'login' is not called here; it's dispatched from over in the AuthStateChange listener/observer in APP.JSX.
+        */
+
+        console.log('Auth worked!', result);
+      }, (error) => {
+        // 2. Error path
+        console.log('Solly! Unable to auth', error);
+    });
   };
+};
+
+export var logout = () => {
+  return {
+    type: 'LOGOUT',
+  };
+};
+
+export var startLogout = () => {
+  return (dispatch, getState) => {
+    return firebase.auth().signOut().then( () => {
+      // This did show (console.log) the Object's value. ok.
+      /* r__MessyGlobalOAuthResultHolder Object {user: W, credential: Mf}
+
+      But then it was not available after page rendering complete, in the console:
+      > wr__MessyGlobalOAuthResultHolder.user.uid
+VM7509:1 Uncaught ReferenceError: wr__MessyGlobalOAuthResultHolder is not defined(…)
+      Ah well.
+      */
+      console.log("wr__MessyGlobalOAuthResultHolder", wr__MessyGlobalOAuthResultHolder);
+      console.log("Logged out!");
+    });
+  };
+};
 
 /* *** /OAUTH GITHUB LOGIN LOGOUT **** */
