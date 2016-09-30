@@ -339,16 +339,22 @@ describe('Actions', () => {
       O.K., /app/firebase/index.js has:
       /* *** OAUTH GITHUB **** ...
       export var githubProvider = new firebase.auth.GithubAuthProvider();
-      And actions.jsx has:
+      And actions.jsx, which runs the app's U/I, has:
       firebase.auth().signInWithPopup(githubProvider)...
+      Whereas here below we want to TEST, with NO U/I, so we used to use 1) Personal Access Tokens, till that no longer worked (ca. 28/Sep/16) and now we use 2) signInAnonymously instead. See below. Cheers.
       */
 
-      var credential = firebase.auth.GithubAuthProvider.credential(process.env.GITHUB_ACCESS_TOKEN);
 
-      // call in as a function. No redirects etc.
+
+      // GitHub Personal Access Token - No Longer Used!
+      // https://www.udemy.com/the-complete-react-web-app-developer-course/learn/v4/questions/1669006
+      // var credential = firebase.auth.GithubAuthProvider.credential(process.env.GITHUB_ACCESS_TOKEN);
+      // firebase.auth().signInWithCredential(credential).then( (user) => {
+      // Call in as a function. No redirects etc.
       // We get back the user object (in 'then')
-      firebase.auth().signInWithCredential(credential).then( (user) => {
-        // success funct
+      // NEW! "Anonymously" instead:
+      firebase.auth().signInAnonymously().then( (user)  => {
+      // success funct
         uid = user.uid;
         // tick marks are `template string`:
         // Recall our database root now has /users/, no longer /todos/

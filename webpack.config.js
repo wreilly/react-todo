@@ -54,7 +54,9 @@ module.exports = {
         DATABASE_URL: JSON.stringify(process.env.DATABASE_URL),
         STORAGE_BUCKET: JSON.stringify(process.env.STORAGE_BUCKET),
         MESSAGING_SENDER_ID: JSON.stringify(process.env.MESSAGING_SENDER_ID),
-        GITHUB_ACCESS_TOKEN: JSON.stringify(process.env.GITHUB_ACCESS_TOKEN),
+        // GitHub Personal Access Token - No Longer Used!
+        // https://www.udemy.com/the-complete-react-web-app-developer-course/learn/v4/questions/1669006
+        // GITHUB_ACCESS_TOKEN: JSON.stringify(process.env.GITHUB_ACCESS_TOKEN),
       },
     }),
  ],
